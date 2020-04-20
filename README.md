@@ -32,11 +32,41 @@ $ sbt spotlessCheck
 $ sbt spotlessApply
 ```
 
+## Supported formatters
+
+|Format|Implemented|
+|------|------|
+|Java|✅|
+|Scala|✅|
+|Kotlin|✅|
+|Groovy|✅|
+|cpp|✅|
+|SQL|✅|
+
 ## Configurations
 
 TODO TODO TODO
 
-## How to try this plugin on local
+## Dynamic dependency
+
+Spotless tries to reduce the static dependencies of various formatters, so spotless resolves the dependencies for formatters on-the-fly if the formatter is needed.
+
+Basically, Spotless runner resolves the dynamic dependencies every time, that is not efficient. So this plugin caches the dynamic dependencies into files once that has resolved deps. And after that, it runs Spotless with cached libraries.
+
+
+## For developers
+
+### How to run tests
+
+```
+SPOTLESS_SBT_TEST_DEPDIR=$(pwd)/.dyn_dep_for_dev sbt clean scripted
+```
+
+`SPOTLESS_SBT_TEST_DEPDIR` is an environment variable to specify a directory for dynamic dependency cache.
+
+If you would like to clear cache, please remove the contents that is in the directory.
+
+### How to try this plugin on local
 
 ```
 $ sbt publishLocal
