@@ -16,4 +16,10 @@
 
 package net.moznion.sbt.spotless.config
 
+/**
+  * A configuration for [[https://github.com/pinterest/ktlint ktlint]].
+  *
+  * @param version The version of ktlint to use.
+  * @param userData Rule set for ktlint.
+  */
 case class KtLintConfig(version: String = null, userData: Map[String, String] = null) {}

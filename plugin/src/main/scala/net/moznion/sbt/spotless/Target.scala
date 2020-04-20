@@ -21,6 +21,14 @@ import java.io.File
 import scala.language.implicitConversions
 
 sealed trait Target
+
+/**
+  * A specifier for location of a file.
+  *
+  * This type accepts `String` or `File` instance.
+  * If the value is instance of `File`, it locates the file according to the instance contents.
+  * Else, when the value is instance of `String`, it locates the file by `${baseDir}/${stringTargetPath}`.
+  */
 object Target {
   case class IsString(str: String) extends Target
   case class IsFile(file: File) extends Target

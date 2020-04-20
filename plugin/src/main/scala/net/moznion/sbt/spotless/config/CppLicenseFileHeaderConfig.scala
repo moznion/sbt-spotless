@@ -23,6 +23,12 @@ import com.diffplug.spotless.FormatterStep
 import com.diffplug.spotless.cpp.CppDefaults
 import com.diffplug.spotless.generic.LicenseHeaderStep
 
+/**
+  * License header configuration with file for cpp.
+  *
+  * @param file License header file to prefix that before the package statement.
+  * @param encoding Character encoding of the license header file.
+  */
 case class CppLicenseFileHeaderConfig(file: File, encoding: Charset)
     extends LicenseHeaderConfig(CppDefaults.DELIMITER_EXPR) {
   override def createStep: FormatterStep =

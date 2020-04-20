@@ -21,6 +21,20 @@ import java.nio.charset.Charset
 import com.diffplug.spotless.{FormatExceptionPolicy, LineEnding}
 import net.moznion.sbt.spotless.Target
 
+/**
+  * A formatter configuration for Kotlin files.
+  *
+  * @param paddedCell A specifier whether to enable paddedCell mode or not. For more detail, please refer to the following doc: [[https://github.com/diffplug/spotless/blob/master/PADDEDCELL.md PADDEDCELL.md]]
+  * @param lineEndings Represents the line endings which should be written by the tool.
+  * @param encoding A character encoding that is used for code formatter.
+  * @param exceptionPolicy A policy for handling exceptions in the format.
+  * @param target A seq of target files to check/format.
+  * @param targetExclude A seq of files to exclude from the target fo checking/formatting.
+  * @param enabled A specifier whether to enable this formatter or not.
+  * @param ktLintConfig A ktlint configuration to format Kotlin files.
+  * @param licenseHeader License header string to prefix a that before the package statement.
+  * @param licenseHeaderFile License header file to prefix a that before the package statement.
+  */
 case class KotlinConfig(
     override val paddedCell: Boolean = false,
     override val lineEndings: LineEnding = null,
@@ -32,7 +46,7 @@ case class KotlinConfig(
     ktLintConfig: KtLintConfig = null,
     licenseHeader: CppLicenseStringHeaderConfig = null,
     licenseHeaderFile: CppLicenseFileHeaderConfig = null,
-) extends GenericConfig(
+) extends FormatterConfig(
       paddedCell,
       lineEndings,
       encoding,

@@ -16,4 +16,10 @@
 
 package net.moznion.sbt.spotless.config
 
+/**
+  * A configuration for [[https://github.com/google/google-java-format google/google-java-format]].
+  *
+  * @param version The version of google-java-format.
+  * @param style The style specifier for the formatter. Ref: [[https://github.com/google/google-java-format/blob/master/core/src/main/java/com/google/googlejavaformat/java/JavaFormatterOptions.java]]
+  */
 case class GoogleJavaFormatConfig(version: String = null, style: String = null) {}

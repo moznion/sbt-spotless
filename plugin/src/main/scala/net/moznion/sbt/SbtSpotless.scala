@@ -25,6 +25,9 @@ import net.moznion.sbt.spotless.config._
 import sbt.Keys._
 import sbt.{Def, _}
 
+/**
+  * An entry-point of sbt-spotless plugin.
+  */
 object SbtSpotless extends AutoPlugin {
 
   object autoImport {

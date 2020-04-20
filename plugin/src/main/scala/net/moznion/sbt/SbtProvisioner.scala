@@ -27,8 +27,10 @@ import scala.collection.JavaConverters._
 
 /**
   * SbtProvisioner is a provisioner for the Spotless with sbt.
+  *
+  * This provisioner resolves dynamic dependency for a code formatter on-demand and on-the-fly.
   */
-object SbtProvisioner {
+private[sbt] object SbtProvisioner {
   def supplyProvisioner(
       spotlessConfig: SpotlessConfig,
       pathConfig: SpotlessPathConfig,

@@ -18,6 +18,12 @@ package net.moznion.sbt.spotless.config
 
 import java.io.File
 
+/**
+  * Eclipse formatter configuration for Java files.
+  *
+  * @param version The version of eclipse formatter. Please refer to the following version definition: [[https://github.com/diffplug/spotless/tree/master/lib-extra/src/main/resources/com/diffplug/spotless/extra/eclipse_jdt_formatter]]
+  * @param configFiles A seq of files for Java eclipse configuration.
+  */
 case class EclipseJavaConfig(
     version: String = null,
     configFiles: Seq[File] = null,

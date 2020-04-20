@@ -23,13 +23,13 @@ import java.nio.file.{Files, Path, StandardOpenOption}
 import com.diffplug.spotless.extra.integration.DiffMessageFormatter
 import com.diffplug.spotless.{Formatter, LineEnding, PaddedCell, PaddedCellBulk}
 import net.moznion.sbt.spotless.Target.{IsFile, IsString}
-import net.moznion.sbt.spotless.config.GenericConfig
+import net.moznion.sbt.spotless.config.FormatterConfig
 import net.moznion.sbt.spotless.exception.{ShouldTurnOnPaddedCellException, ViolatedFormatException}
 import sbt.util.Logger
 
 import scala.collection.JavaConverters._
 
-trait FormatRunnable[T <: GenericConfig] {
+trait FormatRunnable[T <: FormatterConfig] {
   private[spotless] def getTarget: Seq[File]
 
   private[spotless] def resolveTarget(target: Seq[Target], baseDir: Path): Seq[File] = {

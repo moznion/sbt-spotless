@@ -17,5 +17,5 @@
 package net.moznion.sbt.spotless.config
 
 trait ExtensionsSupplier {
-  def getExtensions: Seq[String]
+  private[sbt] def getExtensions: Seq[String]
 }

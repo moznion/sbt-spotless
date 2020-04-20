@@ -18,8 +18,13 @@ package net.moznion.sbt.spotless.config
 
 import java.io.File
 
+/**
+  * Eclipse formatter configuration for cpp files.
+  *
+  * @param version The version of eclipse formatter. Please refer to the following version definition: [[https://github.com/diffplug/spotless/tree/master/lib-extra/src/main/resources/com/diffplug/spotless/extra/eclipse_cdt_formatter]]
+  * @param configFiles A seq of files for cpp eclipse configuration.
+  */
 case class EclipseCppConfig(
-    // ref: https://github.com/diffplug/spotless/tree/master/lib-extra/src/main/resources/com/diffplug/spotless/extra/eclipse_cdt_formatter
     version: String = null,
     configFiles: Seq[File] = null,
 ) {}

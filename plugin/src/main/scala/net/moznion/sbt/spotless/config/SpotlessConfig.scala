@@ -26,6 +26,15 @@ object SpotlessConfig {
   private val dynamicDependencyCacheDir = ".spotlessDepCache"
 }
 
+/**
+  * A configuration for spotless invocation.
+  *
+  * @param baseDir A path of base dir.
+  * @param dynamicDependencyWorkingDir A path of working directory for dynamic dependency resolving.
+  * @param dynamicDependencyCacheDir A path of cache directory for dynamic dependency.
+  * @param disableDynamicDependencyCache A specifier whether to disable cache for dynamic dependency of not.
+  * @param disableDynamicDependencyResolving A specifier whether to disable dynamic dependency resolving.
+  */
 case class SpotlessConfig(
     baseDir: Target = null,
     dynamicDependencyWorkingDir: Target = null,

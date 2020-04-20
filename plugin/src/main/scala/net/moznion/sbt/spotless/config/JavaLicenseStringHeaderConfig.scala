@@ -19,6 +19,11 @@ package net.moznion.sbt.spotless.config
 import com.diffplug.spotless.FormatterStep
 import com.diffplug.spotless.generic.LicenseHeaderStep
 
+/**
+  * License header configuration with string for java.
+  *
+  * @param header License header string to prefix that before the package statement.
+  */
 case class JavaLicenseStringHeaderConfig(header: String)
     extends LicenseHeaderConfig(JavaConfig.licenseHeaderDelimiter) {
   override def createStep: FormatterStep =

@@ -18,5 +18,10 @@ package net.moznion.sbt.spotless.config
 
 import java.io.File
 
+/**
+  * GrEclipse formatter configuration for groovy files.
+  *
+  * @param version The version of GrEclipse formatter. Please refer to the following version definition: [[https://github.com/diffplug/spotless/tree/master/lib-extra/src/main/resources/com/diffplug/spotless/extra/groovy_eclipse_formatter]]
+  * @param configFiles A seq of files for groovy eclipse configuration.
+  */
 case class GrEclipseConfig(version: String = null, configFiles: Seq[File] = null) {}
-// ref: https://github.com/diffplug/spotless/tree/master/lib-extra/src/main/resources/com/diffplug/spotless/extra/groovy_eclipse_formatter

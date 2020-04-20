@@ -22,6 +22,12 @@ import java.nio.charset.Charset
 import com.diffplug.spotless.FormatterStep
 import com.diffplug.spotless.generic.LicenseHeaderStep
 
+/**
+  * License header configuration with file for java.
+  *
+  * @param file License header file to prefix that before the package statement.
+  * @param encoding Character encoding of the license header file.
+  */
 case class JavaLicenseFileHeaderConfig(file: File, encoding: Charset)
     extends LicenseHeaderConfig(JavaConfig.licenseHeaderDelimiter) {
   override def createStep: FormatterStep =

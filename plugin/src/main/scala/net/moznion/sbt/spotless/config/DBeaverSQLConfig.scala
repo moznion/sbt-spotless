@@ -18,6 +18,11 @@ package net.moznion.sbt.spotless.config
 
 import java.io.File
 
+/**
+  * A configuration for [[https://dbeaver.io/ DBeaver]]
+  *
+  * @param configFiles A seq of configuration files for DBeaver.
+  */
 case class DBeaverSQLConfig(
     configFiles: Seq[File] = null,
 ) {}

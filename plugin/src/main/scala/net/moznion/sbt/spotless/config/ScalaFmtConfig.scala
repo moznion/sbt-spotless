@@ -18,6 +18,12 @@ package net.moznion.sbt.spotless.config
 
 import java.io.File
 
+/**
+  * A configuration for [[https://scalameta.org/scalafmt/ Scalafmt]].
+  *
+  * @param version The version of scalafmt to use.
+  * @param configFile A configuration file for scalafmt.
+  */
 case class ScalaFmtConfig(
     version: String = null,
     configFile: File = null,
