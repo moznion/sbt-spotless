@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt
+package net.moznion.sbt.spotless
 
 import java.io.File
 import java.nio.charset.{Charset, StandardCharsets}
@@ -23,7 +23,6 @@ import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
-import net.moznion.sbt.DynamicDependencyResolver.charEncoding
 import net.moznion.sbt.spotless.config.{SpotlessConfig, SpotlessPathConfig}
 import sbt.librarymanagement.ModuleID
 import sbt.librarymanagement.ivy.{InlineIvyConfiguration, IvyDependencyResolution}
@@ -88,7 +87,7 @@ private class DynamicDependencyResolver(
             Files.write(
               Paths.get(cacheFile.toURI),
               DependencyCache(resolved.map(r => r.map(f => f.toString))).asJson.noSpaces
-                .getBytes(charEncoding),
+                .getBytes(DynamicDependencyResolver.charEncoding),
               StandardOpenOption.CREATE,
               StandardOpenOption.WRITE,
               StandardOpenOption.TRUNCATE_EXISTING,
@@ -101,7 +100,9 @@ private class DynamicDependencyResolver(
   }
 
   private def resolveFileCache(mavenCoord: String, cacheFilePath: Path): Either[Unit, Seq[File]] = {
-    decode[DependencyCache](new String(Files.readAllBytes(cacheFilePath), charEncoding)) match {
+    decode[DependencyCache](
+      new String(Files.readAllBytes(cacheFilePath), DynamicDependencyResolver.charEncoding),
+    ) match {
       case Right(cached) =>
         cached.dependencyPaths match {
           case Some(dependencyPaths) =>

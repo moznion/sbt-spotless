@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt
+package net.moznion.sbt.spotless
 
-private[sbt] case class DependencyCache(dependencyPaths: Option[Seq[String]]) {}
+private[spotless] case class DependencyCache(dependencyPaths: Option[Seq[String]]) {}

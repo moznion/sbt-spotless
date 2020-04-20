@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt
+package net.moznion.sbt.spotless
 
 import java.io.File
 import java.util
@@ -23,7 +23,7 @@ import com.diffplug.spotless.Provisioner
 import net.moznion.sbt.spotless.config.{SpotlessConfig, SpotlessPathConfig}
 import sbt.util.Logger
 
-import scala.collection.JavaConverters._
+import _root_.scala.collection.JavaConverters._
 
 /**
   * SbtProvisioner is a provisioner for the Spotless with sbt.

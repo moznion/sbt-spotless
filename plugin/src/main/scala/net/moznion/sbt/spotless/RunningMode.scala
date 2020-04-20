@@ -16,4 +16,4 @@
 
 package net.moznion.sbt.spotless
 
-private[sbt] case class RunningMode(check: Boolean = false, applyFormat: Boolean = false) {}
+case class RunningMode(check: Boolean = false, applyFormat: Boolean = false) {}
