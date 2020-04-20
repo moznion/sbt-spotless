@@ -1,4 +1,4 @@
-# sbt-spotless ![![Scala CI](https://github.com/moznion/sbt-spotless/workflows/Scala%20CI/badge.svg)](https://github.com/moznion/sbt-spotless/actions?query=workflow%3A%22Scala+CI%22) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.moznion.sbt/sbt-spotless/badge.svg?kill_cache=1)](https://search.maven.org/artifact/net.moznion.sbt/sbt-spotless/)
+# sbt-spotless [![Scala CI](https://github.com/moznion/sbt-spotless/workflows/Scala%20CI/badge.svg)](https://github.com/moznion/sbt-spotless/actions?query=workflow%3A%22Scala+CI%22) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.moznion.sbt/sbt-spotless/badge.svg?kill_cache=1)](https://search.maven.org/artifact/net.moznion.sbt/sbt-spotless/)
 
 An sbt plugin for [Spotless](https://github.com/diffplug/spotless).
 
