@@ -29,25 +29,24 @@ import scala.collection.JavaConverters._
   * SbtProvisioner is a provisioner for the Spotless with sbt.
   */
 object SbtProvisioner {
-  def supplyProvisioner: (SpotlessConfig, SpotlessPathConfig, Seq[File], Logger) => Provisioner = {
-    (
-        spotlessConfig: SpotlessConfig,
-        pathConfig: SpotlessPathConfig,
-        staticDeps: Seq[File],
-        logger: Logger,
-    ) => (withTransitives: Boolean, mavenCoords: util.Collection[String]) =>
-      {
-        val dynamicDependencyResolver =
-          new DynamicDependencyResolver(spotlessConfig, pathConfig, logger)
-        val dynamicDeps: Iterable[File] = if (spotlessConfig.disableDynamicDependencyResolving) {
-          Seq()
-        } else {
-          mavenCoords.asScala.flatMap(mavenCoord => {
-            logger.debug("given maven-coord: " + mavenCoord)
-            dynamicDependencyResolver.resolve(mavenCoord)
-          })
-        }
-        (staticDeps ++ dynamicDeps).toSet.asJava
+  def supplyProvisioner(
+      spotlessConfig: SpotlessConfig,
+      pathConfig: SpotlessPathConfig,
+      staticDeps: Seq[File],
+      logger: Logger,
+  ): Provisioner = { (withTransitives: Boolean, mavenCoords: util.Collection[String]) =>
+    {
+      val dynamicDependencyResolver =
+        new DynamicDependencyResolver(spotlessConfig, pathConfig, logger)
+      val dynamicDeps: Iterable[File] = if (spotlessConfig.disableDynamicDependencyResolving) {
+        Seq()
+      } else {
+        mavenCoords.asScala.flatMap(mavenCoord => {
+          logger.debug("given maven-coord: " + mavenCoord)
+          dynamicDependencyResolver.resolve(mavenCoord)
+        })
       }
+      (staticDeps ++ dynamicDeps).toSet.asJava
+    }
   }
 }
