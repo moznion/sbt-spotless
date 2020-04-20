@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless
+package net.moznion.sbt.spotless.task
 
 import java.io.File
 import java.nio.charset.Charset
@@ -25,11 +25,12 @@ import com.diffplug.spotless.{Formatter, LineEnding, PaddedCell, PaddedCellBulk}
 import net.moznion.sbt.spotless.Target.{IsFile, IsString}
 import net.moznion.sbt.spotless.config.FormatterConfig
 import net.moznion.sbt.spotless.exception.{ShouldTurnOnPaddedCellException, ViolatedFormatException}
+import net.moznion.sbt.spotless.{FormatterSteps, Target}
 import sbt.util.Logger
 
-import scala.collection.JavaConverters._
+import _root_.scala.collection.JavaConverters._
 
-trait FormatRunnable[T <: FormatterConfig] {
+trait RunnableTask[T <: FormatterConfig] {
   private[spotless] def getTarget: Seq[File]
 
   private[spotless] def resolveTarget(target: Seq[Target], baseDir: Path): Seq[File] = {

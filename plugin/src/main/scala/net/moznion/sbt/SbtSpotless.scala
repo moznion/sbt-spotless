@@ -22,6 +22,7 @@ import java.nio.file.Path
 import com.diffplug.spotless.Provisioner
 import net.moznion.sbt.spotless._
 import net.moznion.sbt.spotless.config._
+import net.moznion.sbt.spotless.task.{Cpp, Groovy, Java, Kotlin, Scala, Sql}
 import sbt.Keys._
 import sbt.{Def, _}
 

@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless
+package net.moznion.sbt.spotless.task
 
 import java.io.File
 import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
-import com.diffplug.spotless.kotlin.KtLintStep
-import net.moznion.sbt.spotless.config.KotlinConfig
+import com.diffplug.spotless.sql.DBeaverSQLFormatterStep
+import net.moznion.sbt.spotless.config.SqlConfig
+import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
 import _root_.scala.collection.JavaConverters._
 
-private[sbt] case class Kotlin[T <: KotlinConfig](
+private[sbt] case class Sql[T <: SqlConfig](
     private val config: T,
     private val baseDir: Path,
     private val logger: Logger,
-) extends FormatRunnable[T] {
+) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
       return
@@ -38,21 +39,11 @@ private[sbt] case class Kotlin[T <: KotlinConfig](
 
     var steps = FormatterSteps()
 
-    steps = Option(config.licenseHeader)
-      .map(licenseHeader => steps.addStep(licenseHeader.createStep))
-      .getOrElse(steps)
-
-    steps = Option(config.licenseHeaderFile)
-      .map(licenseHeaderFile => steps.addStep(licenseHeaderFile.createStep))
-      .getOrElse(steps)
-
-    steps = Option(config.ktLintConfig)
-      .map(ktLintConfig => {
-        val version = Option(ktLintConfig.version)
-          .getOrElse(KtLintStep.defaultVersion())
-        val userData = Option(ktLintConfig.userData).getOrElse(Map()).asJava
-
-        steps.addStep(KtLintStep.create(version, provisioner, userData))
+    steps = Option(config.dBeaverSQLConfig)
+      .map(dBeaverSQLConfig => {
+        Option(dBeaverSQLConfig.configFiles)
+          .map(files => steps.addStep(DBeaverSQLFormatterStep.create(files.asJava)))
+          .getOrElse(steps)
       })
       .getOrElse(steps)
 
@@ -67,9 +58,7 @@ private[sbt] case class Kotlin[T <: KotlinConfig](
 
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
-      return List("kt", "ktm", "kts").flatMap(ext =>
-        better.files.File(baseDir).glob(ext).map(found => found.toJava),
-      )
+      return better.files.File(baseDir).glob("**/*.sql").map(found => found.toJava).toSeq
     }
 
     resolveTarget(config.target, baseDir)

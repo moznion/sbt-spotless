@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless
+package net.moznion.sbt.spotless.task
 
 import java.io.File
 import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
-import com.diffplug.spotless.extra.groovy.GrEclipseFormatterStep
-import com.diffplug.spotless.generic.LicenseHeaderStep
-import com.diffplug.spotless.java.ImportOrderStep
-import net.moznion.sbt.spotless.config.GroovyConfig
+import com.diffplug.spotless.cpp.CppDefaults
+import com.diffplug.spotless.extra.cpp.EclipseCdtFormatterStep
+import net.moznion.sbt.spotless.config.CppConfig
+import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
 import _root_.scala.collection.JavaConverters._
 
-private[sbt] case class Groovy[T <: GroovyConfig](
+private[sbt] case class Cpp[T <: CppConfig](
     private val config: T,
     private val baseDir: Path,
     private val logger: Logger,
-) extends FormatRunnable[T] {
-  def run(provisioner: Provisioner, mode: RunningMode): Unit = {
+) extends RunnableTask[T] {
+  def run(
+      provisioner: Provisioner,
+      mode: RunningMode,
+  ): Unit = {
     if (!config.enabled) {
       return
     }
@@ -48,32 +51,20 @@ private[sbt] case class Groovy[T <: GroovyConfig](
       .map(licenseHeaderFile => steps.addStep(licenseHeaderFile.createStep))
       .getOrElse(steps)
 
-    steps = Option(config.importOrder)
-      .map(importOrder => steps.addStep(ImportOrderStep.forJava().createFrom(importOrder: _*)))
-      .getOrElse(steps)
+    steps = Option(config.eclipseCpp)
+      .map(eclipseCppFormat => {
+        val version = Option(eclipseCppFormat.version)
+          .getOrElse(EclipseCdtFormatterStep.defaultVersion())
 
-    steps = Option(config.importOrderFile)
-      .map(importOrderFile => steps.addStep(ImportOrderStep.forJava().createFrom(importOrderFile)))
-      .getOrElse(steps)
-
-    steps = Option(config.grEclipse)
-      .map(grEclipse => {
-        val version = Option(grEclipse.version)
-          .getOrElse(GrEclipseFormatterStep.defaultVersion())
-        val configFiles = Option(grEclipse.configFiles).getOrElse(List())
-
-        val builder = GrEclipseFormatterStep.createBuilder(provisioner)
+        val builder = EclipseCdtFormatterStep.createBuilder(provisioner)
         builder.setVersion(version)
-        builder.setPreferences(configFiles.asJava)
+
+        Option(eclipseCppFormat.configFiles)
+          .foreach(configFiles => builder.setPreferences(configFiles.asJava))
 
         steps.addStep(builder.build())
       })
       .getOrElse(steps)
-
-    steps = steps.filterByName(
-      LicenseHeaderStep.name(),
-      LicenseHeaderStep.unsupportedJvmFilesFilter(),
-    )
 
     if (mode.applyFormat) {
       applyFormat(steps, baseDir, config, logger)
@@ -86,7 +77,9 @@ private[sbt] case class Groovy[T <: GroovyConfig](
 
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
-      return better.files.File(baseDir).glob("**/*.groovy").map(found => found.toJava).toSeq
+      return CppDefaults.FILE_FILTER.asScala.flatMap(filter =>
+        better.files.File(baseDir).glob(filter).map(found => found.toJava),
+      )
     }
 
     resolveTarget(config.target, baseDir)

@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless
+package net.moznion.sbt.spotless.task
 
 import java.io.File
 import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
-import com.diffplug.spotless.cpp.CppDefaults
-import com.diffplug.spotless.extra.cpp.EclipseCdtFormatterStep
-import net.moznion.sbt.spotless.config.CppConfig
+import com.diffplug.spotless.kotlin.KtLintStep
+import net.moznion.sbt.spotless.config.KotlinConfig
+import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
 import _root_.scala.collection.JavaConverters._
 
-private[sbt] case class Cpp[T <: CppConfig](
+private[sbt] case class Kotlin[T <: KotlinConfig](
     private val config: T,
     private val baseDir: Path,
     private val logger: Logger,
-) extends FormatRunnable[T] {
-  def run(
-      provisioner: Provisioner,
-      mode: RunningMode,
-  ): Unit = {
+) extends RunnableTask[T] {
+  def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
       return
     }
@@ -50,18 +47,13 @@ private[sbt] case class Cpp[T <: CppConfig](
       .map(licenseHeaderFile => steps.addStep(licenseHeaderFile.createStep))
       .getOrElse(steps)
 
-    steps = Option(config.eclipseCpp)
-      .map(eclipseCppFormat => {
-        val version = Option(eclipseCppFormat.version)
-          .getOrElse(EclipseCdtFormatterStep.defaultVersion())
+    steps = Option(config.ktLintConfig)
+      .map(ktLintConfig => {
+        val version = Option(ktLintConfig.version)
+          .getOrElse(KtLintStep.defaultVersion())
+        val userData = Option(ktLintConfig.userData).getOrElse(Map()).asJava
 
-        val builder = EclipseCdtFormatterStep.createBuilder(provisioner)
-        builder.setVersion(version)
-
-        Option(eclipseCppFormat.configFiles)
-          .foreach(configFiles => builder.setPreferences(configFiles.asJava))
-
-        steps.addStep(builder.build())
+        steps.addStep(KtLintStep.create(version, provisioner, userData))
       })
       .getOrElse(steps)
 
@@ -76,8 +68,8 @@ private[sbt] case class Cpp[T <: CppConfig](
 
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
-      return CppDefaults.FILE_FILTER.asScala.flatMap(filter =>
-        better.files.File(baseDir).glob(filter).map(found => found.toJava),
+      return List("kt", "ktm", "kts").flatMap(ext =>
+        better.files.File(baseDir).glob(ext).map(found => found.toJava),
       )
     }
 

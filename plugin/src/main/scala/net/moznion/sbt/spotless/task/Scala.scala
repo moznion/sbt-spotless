@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless
+package net.moznion.sbt.spotless.task
 
 import java.io.File
 import java.nio.file.Path
 
-import com.diffplug.spotless._
+import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.scala.ScalaFmtStep
 import net.moznion.sbt.spotless.config.ScalaConfig
+import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
 private[sbt] case class Scala[T <: ScalaConfig](
@@ -29,7 +30,7 @@ private[sbt] case class Scala[T <: ScalaConfig](
     private val config: T,
     private val baseDir: Path,
     private val logger: Logger,
-) extends FormatRunnable[T] {
+) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
       return
