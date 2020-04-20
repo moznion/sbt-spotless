@@ -1,0 +1,10 @@
+$ copy-file ./fixtures/InvalidIndentMain.scala ./src/main/scala/Main.scala
+$ copy-file ./fixtures/InvalidIndentTest.scala ./src/test/scala/Test.scala
+
+# should fail
+-> spotlessCheck
+
+# should pass and format files
+> spotlessApply
+$ must-mirror ./fixtures/ValidIndentMain.scala ./src/main/scala/Main.scala
+$ must-mirror ./fixtures/ValidIndentTest.scala ./src/test/scala/Test.scala

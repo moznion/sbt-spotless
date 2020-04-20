@@ -1,0 +1,3 @@
+object Test {
+println("indent")
+}

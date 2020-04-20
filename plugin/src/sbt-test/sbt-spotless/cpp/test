@@ -1,0 +1,11 @@
+$ copy-file ./fixtures/invalid_format_test.h ./src/test.h
+$ copy-file ./fixtures/invalid_format_test.c ./src/test.c
+
+# should fail
+-> spotlessCheck
+
+# should pass and format files
+> spotlessApply
+$ must-mirror ./fixtures/valid_format_test.h ./src/test.h
+$ must-mirror ./fixtures/valid_format_test.c ./src/test.c
+

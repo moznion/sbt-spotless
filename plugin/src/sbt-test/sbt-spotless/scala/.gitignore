@@ -1,0 +1,4 @@
+src/main/scala/*
+!src/main/scala/.gitkeep
+src/test/scala/*
+!src/test/scala/.gitkeep

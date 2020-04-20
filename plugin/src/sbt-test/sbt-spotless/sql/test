@@ -1,0 +1,8 @@
+$ copy-file ./fixtures/invalid_format.sql ./src/test.sql
+
+# should fail
+-> spotlessCheck
+
+# should pass and format files
+> spotlessApply
+$ must-mirror ./fixtures/valid_format.sql ./src/test.sql

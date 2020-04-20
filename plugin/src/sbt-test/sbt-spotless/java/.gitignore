@@ -1,0 +1,4 @@
+src/main/java/*
+!src/main/java/.gitkeep
+src/test/java/*
+!src/test/java/.gitkeep

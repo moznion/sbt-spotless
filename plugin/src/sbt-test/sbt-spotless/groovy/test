@@ -1,0 +1,10 @@
+$ copy-file ./fixtures/InvalidIndentMain.groovy ./src/main/groovy/Main.groovy
+$ copy-file ./fixtures/InvalidIndentTest.groovy ./src/test/groovy/Test.groovy
+
+# should fail
+-> spotlessCheck
+
+# should pass and format files
+> spotlessApply
+$ must-mirror ./fixtures/ValidIndentMain.groovy ./src/main/groovy/Main.groovy
+$ must-mirror ./fixtures/ValidIndentTest.groovy ./src/test/groovy/Test.groovy
