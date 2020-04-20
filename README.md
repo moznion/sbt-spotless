@@ -1,6 +1,6 @@
 # sbt-spotless [![Scala CI](https://github.com/moznion/sbt-spotless/workflows/Scala%20CI/badge.svg)](https://github.com/moznion/sbt-spotless/actions?query=workflow%3A%22Scala+CI%22) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.moznion.sbt/sbt-spotless/badge.svg?kill_cache=1)](https://search.maven.org/artifact/net.moznion.sbt/sbt-spotless/)
 
-An sbt plugin for [Spotless](https://github.com/diffplug/spotless).
+An sbt plugin for [Spotless](https://github.com/diffplug/spotless) code formatter/checker.
 
 ## Notice
 
@@ -43,6 +43,8 @@ $ sbt spotlessApply
 |cpp|✅|
 |SQL|✅|
 
+Supporting other formats is under working. And of course, pull-request is welcome.
+
 ## Configurations
 
 TODO TODO TODO
@@ -53,6 +55,29 @@ Spotless tries to reduce the static dependencies of various formatters, so spotl
 
 Basically, Spotless runner resolves the dynamic dependencies every time, that is not efficient. So this plugin caches the dynamic dependencies into files once that has resolved deps. And after that, it runs Spotless with cached libraries.
 
+## Known issues
+
+### Some formatter cannot resolve the dynamic dependency
+
+On some formatter, this plugin (i.e. Ivy2) cannot resolve dependencies of the formatter dynamically so it needs to declare the dependencies explicitly in your `build.sbt`.
+
+#### Groovy
+
+```scala
+libraryDependencies ++= List(
+  "org.eclipse.platform" % "org.eclipse.equinox.app" % "1.3.600", // FIXME workaround for dynamic dependency resolution
+  "com.diffplug.spotless" % "spotless-eclipse-groovy" % "3.5.0", // FIXME workaround for dynamic dependency resolution
+),
+```
+
+#### cpp
+
+```scala
+libraryDependencies ++= List(
+  "org.eclipse.platform" % "org.eclipse.equinox.app" % "1.3.600", // FIXME workaround for dependency resolution
+  "com.diffplug.spotless" % "spotless-eclipse-cdt" % "9.9.0", // FIXME workaround for dependency resolution
+),
+```
 
 ## For developers
 
