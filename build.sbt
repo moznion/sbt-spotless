@@ -39,6 +39,5 @@ lazy val plugin = project
     publishMavenStyle := true,
     publishArtifact in Test := false,
     publishTo := sonatypePublishToBundle.value,
-    sources in (Compile, doc) := Seq(),
   )
   .enablePlugins(AutomateHeaderPlugin)
