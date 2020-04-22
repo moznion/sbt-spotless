@@ -9,6 +9,6 @@ lazy val root = (project in file("."))
       dynamicDependencyCacheDir = file(System.getenv("SPOTLESS_SBT_TEST_DEPDIR") + "/.spotless"),
     ),
     spotlessScala := ScalaConfig(
-      scalafmt = ScalaFmtConfig(),
+      scalafmt = ScalafmtConfig(),
     ),
   )

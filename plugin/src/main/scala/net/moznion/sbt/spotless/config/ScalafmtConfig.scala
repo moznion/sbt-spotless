@@ -24,7 +24,7 @@ import java.io.File
   * @param version The version of scalafmt to use.
   * @param configFile A configuration file for scalafmt.
   */
-case class ScalaFmtConfig(
+case class ScalafmtConfig(
     version: String = null,
     configFile: File = null,
 ) {}
