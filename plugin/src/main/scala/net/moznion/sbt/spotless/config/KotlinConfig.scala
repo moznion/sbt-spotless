@@ -44,8 +44,8 @@ case class KotlinConfig(
     override val targetExclude: Seq[Target] = null,
     override val enabled: Boolean = true,
     ktLintConfig: KtLintConfig = null,
-    licenseHeader: CppLicenseStringHeaderConfig = null,
-    licenseHeaderFile: CppLicenseFileHeaderConfig = null,
+    licenseHeader: KotlinLicenseStringHeaderConfig = null,
+    licenseHeaderFile: KotlinLicenseFileHeaderConfig = null,
 ) extends FormatterConfig(
       paddedCell,
       lineEndings,
