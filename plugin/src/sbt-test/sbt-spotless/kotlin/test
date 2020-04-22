@@ -1,0 +1,10 @@
+$ copy-file ./fixtures/InvalidIndentMain.kt ./src/main/kotlin/Main.kt
+$ copy-file ./fixtures/InvalidIndentTest.kt ./src/test/kotlin/Test.kt
+
+# should fail
+-> spotlessCheck
+
+# should pass and format files
+> spotlessApply
+$ must-mirror ./fixtures/ValidIndentMain.kt ./src/main/kotlin/Main.kt
+$ must-mirror ./fixtures/ValidIndentTest.kt ./src/test/kotlin/Test.kt

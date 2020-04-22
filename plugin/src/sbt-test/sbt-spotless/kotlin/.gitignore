@@ -1,0 +1,4 @@
+src/main/kotlin/*
+!src/main/kotlin/.gitkeep
+src/test/kotlin/*
+!src/test/kotlin/.gitkeep

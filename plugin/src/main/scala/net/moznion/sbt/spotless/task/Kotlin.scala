@@ -47,7 +47,7 @@ private[sbt] case class Kotlin[T <: KotlinConfig](
       .map(licenseHeaderFile => steps.addStep(licenseHeaderFile.createStep))
       .getOrElse(steps)
 
-    steps = Option(config.ktLintConfig)
+    steps = Option(config.ktlint)
       .map(ktLintConfig => {
         val version = Option(ktLintConfig.version)
           .getOrElse(KtLintStep.defaultVersion())
@@ -69,7 +69,7 @@ private[sbt] case class Kotlin[T <: KotlinConfig](
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
       return List("kt", "ktm", "kts").flatMap(ext =>
-        better.files.File(baseDir).glob(ext).map(found => found.toJava),
+        better.files.File(baseDir).glob("**/*." + ext).map(found => found.toJava),
       )
     }
 

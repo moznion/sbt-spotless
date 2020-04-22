@@ -31,7 +31,7 @@ import net.moznion.sbt.spotless.Target
   * @param target A seq of target files to check/format.
   * @param targetExclude A seq of files to exclude from the target fo checking/formatting.
   * @param enabled A specifier whether to enable this formatter or not.
-  * @param ktLintConfig A ktlint configuration to format Kotlin files.
+  * @param ktlint A ktlint configuration to format Kotlin files.
   * @param licenseHeader License header string to prefix a that before the package statement.
   * @param licenseHeaderFile License header file to prefix a that before the package statement.
   */
@@ -43,7 +43,7 @@ case class KotlinConfig(
     override val target: Seq[Target] = null,
     override val targetExclude: Seq[Target] = null,
     override val enabled: Boolean = true,
-    ktLintConfig: KtLintConfig = null,
+    ktlint: KtlintConfig = null,
     licenseHeader: KotlinLicenseStringHeaderConfig = null,
     licenseHeaderFile: KotlinLicenseFileHeaderConfig = null,
 ) extends FormatterConfig(

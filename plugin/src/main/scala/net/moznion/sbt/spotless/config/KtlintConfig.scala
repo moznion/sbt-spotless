@@ -22,4 +22,4 @@ package net.moznion.sbt.spotless.config
   * @param version The version of ktlint to use.
   * @param userData Rule set for ktlint.
   */
-case class KtLintConfig(version: String = null, userData: Map[String, String] = null) {}
+case class KtlintConfig(version: String = null, userData: Map[String, String] = null) {}
