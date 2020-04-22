@@ -1,4 +1,4 @@
-src/main/groovy/.gitkeep
+src/main/groovy/*
 !src/main/groovy/.gitkeep
 src/test/groovy/*
 !src/test/groovy/.gitkeep
