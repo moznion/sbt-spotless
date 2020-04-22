@@ -47,7 +47,7 @@ Supporting other formats is under working. And of course, pull-request is welcom
 
 ## Configurations
 
-TODO TODO TODO
+Please refer to the following wiki page: [Configurations](https://github.com/moznion/sbt-spotless/wiki/Configurations)
 
 ## Dynamic dependency
 
