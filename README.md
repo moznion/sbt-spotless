@@ -15,7 +15,7 @@ There is the possibility that everything will be changed without notice.
 in your `plugins.sbt`:
 
 ```
-addSbtPlugin("net.moznion.sbt" % "sbt-spotless" % "0.0.1-alpha1")
+addSbtPlugin("net.moznion.sbt" % "sbt-spotless" % "0.0.1-beta1")
 ```
 
 ## Usage
