@@ -39,9 +39,9 @@ private[sbt] case class Sql[T <: SqlConfig](
 
     var steps = FormatterSteps()
 
-    steps = Option(config.dBeaverSQLConfig)
-      .map(dBeaverSQLConfig => {
-        Option(dBeaverSQLConfig.configFiles)
+    steps = Option(config.dbeaver)
+      .map(dbeaver => {
+        Option(dbeaver.configFiles)
           .map(files => steps.addStep(DBeaverSQLFormatterStep.create(files.asJava)))
           .getOrElse(steps)
       })

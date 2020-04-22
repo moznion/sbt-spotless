@@ -10,6 +10,6 @@ lazy val root = (project in file("."))
     ),
     spotlessSql := SqlConfig(
       target = Seq("src/*.sql"),
-      dBeaverSQLConfig = DBeaverSQLConfig(Seq()),
+      dbeaver = DBeaverConfig(Seq()),
     ),
   )

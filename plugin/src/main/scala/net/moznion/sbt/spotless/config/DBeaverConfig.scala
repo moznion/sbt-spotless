@@ -23,6 +23,6 @@ import java.io.File
   *
   * @param configFiles A seq of configuration files for DBeaver.
   */
-case class DBeaverSQLConfig(
+case class DBeaverConfig(
     configFiles: Seq[File] = null,
 ) {}

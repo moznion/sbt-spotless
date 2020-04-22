@@ -31,7 +31,7 @@ import net.moznion.sbt.spotless.Target
   * @param target A seq of target files to check/format.
   * @param targetExclude A seq of files to exclude from the target fo checking/formatting.
   * @param enabled A specifier whether to enable this formatter or not.
-  * @param dBeaverSQLConfig A DBeaver configuration to format SQL files.
+  * @param dbeaver A DBeaver configuration to format SQL files.
   */
 case class SqlConfig(
     override val paddedCell: Boolean = false,
@@ -41,7 +41,7 @@ case class SqlConfig(
     override val target: Seq[Target] = null,
     override val targetExclude: Seq[Target] = null,
     override val enabled: Boolean = true,
-    dBeaverSQLConfig: DBeaverSQLConfig = null,
+    dbeaver: DBeaverConfig = null,
 ) extends FormatterConfig(
       paddedCell,
       lineEndings,
