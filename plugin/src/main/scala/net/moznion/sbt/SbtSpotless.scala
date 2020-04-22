@@ -32,22 +32,22 @@ import sbt.{Def, _}
 object SbtSpotless extends AutoPlugin {
 
   object autoImport {
-    lazy val spotlessApply = taskKey[Unit]("apply format: TODO")
-    lazy val spotlessCheck = taskKey[Unit]("check format: TODO")
+    lazy val spotlessApply = taskKey[Unit]("apply the file format by Spotless")
+    lazy val spotlessCheck = taskKey[Unit]("check the file format by Spotless")
 
-    lazy val spotless = SettingKey[SpotlessConfig]("spotless general configuration: TODO")
+    lazy val spotless = SettingKey[SpotlessConfig]("spotless", "spotless plugin configuration")
     lazy val spotlessJava =
-      SettingKey[JavaConfig]("spotless configuration for Java: TODO")
+      SettingKey[JavaConfig]("spotlessJava", "spotless configuration for Java")
     lazy val spotlessScala =
-      SettingKey[ScalaConfig]("spotless configuration for Scala: TODO")
+      SettingKey[ScalaConfig]("spotlessScala", "spotless configuration for Scala")
     lazy val spotlessCpp =
-      SettingKey[CppConfig]("spotless configuration for CPP: TODO")
+      SettingKey[CppConfig]("spotlessCpp", "spotless configuration for cpp")
     lazy val spotlessGroovy =
-      SettingKey[GroovyConfig]("spotless configuration for Groovy: TODO")
+      SettingKey[GroovyConfig]("spotlessGroovy", "spotless configuration for Groovy")
     lazy val spotlessKotlin =
-      SettingKey[KotlinConfig]("spotless configuration for Kotlin: TODO")
+      SettingKey[KotlinConfig]("spotlessKotlin", "spotless configuration for Kotlin")
     lazy val spotlessSql =
-      SettingKey[SqlConfig]("spotless configuration for SQL: TODO")
+      SettingKey[SqlConfig]("spotlessSql", "spotless configuration for SQL")
   }
 
   import autoImport._
