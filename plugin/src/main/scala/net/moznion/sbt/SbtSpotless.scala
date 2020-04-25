@@ -22,7 +22,7 @@ import java.nio.file.Path
 import com.diffplug.spotless.Provisioner
 import net.moznion.sbt.spotless._
 import net.moznion.sbt.spotless.config._
-import net.moznion.sbt.spotless.task.{Cpp, Groovy, Java, Kotlin, Scala, Sql}
+import net.moznion.sbt.spotless.task._
 import sbt.Keys._
 import sbt.{Def, _}
 
@@ -75,7 +75,7 @@ object SbtSpotless extends AutoPlugin {
       Def.task {
         val defaultBaseDir: File = thisProject.value.base
         val config: SpotlessConfig = spotless.value
-        val pathConfig: SpotlessPathConfig = config.toPathConfig(defaultBaseDir)
+        val pathConfig: SpotlessPathConfig = config.toPathConfig(defaultBaseDir, target.value)
         val baseDir: Path = pathConfig.baseDir.toPath
 
         val logger: Logger = streams.value.log

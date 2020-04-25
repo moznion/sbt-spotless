@@ -22,7 +22,6 @@ import net.moznion.sbt.spotless.Target
 import net.moznion.sbt.spotless.Target.{IsFile, IsString}
 
 object SpotlessConfig {
-  private val dependencyWorkingDir = "target"
   private val dynamicDependencyCacheDir = ".spotlessDepCache"
 }
 
@@ -42,15 +41,17 @@ case class SpotlessConfig(
     disableDynamicDependencyCache: Boolean = false,
     disableDynamicDependencyResolving: Boolean = false,
 ) {
-  private[sbt] def toPathConfig(defaultBaseDir: File): SpotlessPathConfig = {
+  private[sbt] def toPathConfig(
+      defaultBaseDir: File,
+      defaultTargetDirectory: File,
+  ): SpotlessPathConfig = {
     val defaultBaseDirTarget: Target = defaultBaseDir
     val baseDir: File = Option(this.baseDir).getOrElse(defaultBaseDirTarget) match {
       case IsString(strPath) => new File(defaultBaseDir, strPath)
       case IsFile(file)      => file
     }
 
-    val defaultDynamicDependencyWorkingDir: Target =
-      new File(baseDir, SpotlessConfig.dependencyWorkingDir)
+    val defaultDynamicDependencyWorkingDir: Target = defaultTargetDirectory
     val dynamicDependencyWorkingDir: File =
       Option(this.dynamicDependencyWorkingDir).getOrElse(defaultDynamicDependencyWorkingDir) match {
         case IsString(strPath) => new File(baseDir, strPath)
