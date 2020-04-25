@@ -1,3 +1,5 @@
+import ReleaseTransformations._
+
 lazy val sbtSpotless = project.in(file(".")).aggregate(plugin).settings(skip in publish := true)
 
 lazy val plugin = project
@@ -39,5 +41,22 @@ lazy val plugin = project
     publishMavenStyle := true,
     publishArtifact in Test := false,
     publishTo := sonatypePublishToBundle.value,
+
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      runTest,
+      releaseStepInputTask(scripted),
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("+publishSigned"),
+      setNextVersion,
+      commitNextVersion,
+      releaseStepCommand("sonatypeBundleRelease"),
+      pushChanges
+    ),
   )
   .enablePlugins(AutomateHeaderPlugin)
+
