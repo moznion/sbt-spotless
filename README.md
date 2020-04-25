@@ -91,6 +91,12 @@ SPOTLESS_SBT_TEST_DEPDIR=$(pwd)/.dyn_dep_for_dev sbt clean scripted
 
 If you would like to clear cache, please remove the contents that is in the directory.
 
+### How to release this plugin to maven central
+
+```
+SPOTLESS_SBT_TEST_DEPDIR=$(pwd)/.dyn_dep_for_dev sbt release
+```
+
 ### How to try this plugin on local
 
 ```

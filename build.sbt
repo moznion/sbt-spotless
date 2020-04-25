@@ -47,7 +47,7 @@ lazy val plugin = project
       inquireVersions,
       runClean,
       runTest,
-      releaseStepInputTask(scripted),
+      releaseStepCommand("scripted"),
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
@@ -55,7 +55,7 @@ lazy val plugin = project
       setNextVersion,
       commitNextVersion,
       releaseStepCommand("sonatypeBundleRelease"),
-      pushChanges
+      pushChanges,
     ),
   )
   .enablePlugins(AutomateHeaderPlugin)
