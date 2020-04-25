@@ -70,7 +70,7 @@ object SbtSpotless extends AutoPlugin {
     spotlessSql := SqlConfig(enabled = false),
   )
 
-  private val supplySpotlessTaskInitiator: RunningMode => Def.Initialize[Task[Option[Unit]]] = {
+  private val supplySpotlessTaskInitiator: RunningMode => Def.Initialize[Task[Unit]] = {
     mode: RunningMode =>
       Def.task {
         val defaultBaseDir: File = thisProject.value.base
@@ -120,8 +120,6 @@ object SbtSpotless extends AutoPlugin {
         if (sqlConfig.enabled) {
           Sql(sqlConfig, baseDir, logger).run(provisioner, mode)
         }
-
-        Option(Unit)
       }
   }
 }
