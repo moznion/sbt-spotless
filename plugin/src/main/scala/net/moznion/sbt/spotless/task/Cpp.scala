@@ -85,4 +85,6 @@ private[sbt] case class Cpp[T <: CppConfig](
   }
 
   override def getName: String = "spotlessCpp"
+
+  override def getClassName: String = config.getClass.getSimpleName
 }

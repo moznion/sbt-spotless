@@ -67,7 +67,12 @@ trait RunnableTask[T <: FormatterConfig] {
 
       if (problemFiles.nonEmpty) {
         if (PaddedCellBulk.anyMisbehave(formatter, problemFiles.asJava)) {
-          throw ShouldTurnOnPaddedCellException()
+          throw ShouldTurnOnPaddedCellException(
+            getName,
+            getClassName,
+            paddedCellDescriptionURL,
+            pathConfig,
+          )
         }
         throw ViolatedFormatException(
           DiffMessageFormatter
@@ -165,7 +170,12 @@ trait RunnableTask[T <: FormatterConfig] {
         }
       }
       if (anyMisbehave) {
-        throw ShouldTurnOnPaddedCellException()
+        throw ShouldTurnOnPaddedCellException(
+          getName,
+          getClassName,
+          paddedCellDescriptionURL,
+          pathConfig,
+        )
       }
 
       changed.reverse
@@ -195,4 +205,5 @@ trait RunnableTask[T <: FormatterConfig] {
   }
 
   def getName: String;
+  def getClassName: String;
 }

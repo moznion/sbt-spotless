@@ -108,4 +108,6 @@ private[sbt] case class Java[T <: JavaConfig](
   }
 
   override def getName: String = "spotlessJava"
+
+  override def getClassName: String = config.getClass.getSimpleName
 }

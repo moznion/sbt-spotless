@@ -68,4 +68,6 @@ private[sbt] case class Sql[T <: SqlConfig](
   }
 
   override def getName: String = "spotlessSql"
+
+  override def getClassName: String = config.getClass.getSimpleName
 }

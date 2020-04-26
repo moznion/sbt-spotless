@@ -76,4 +76,6 @@ private[sbt] case class Kotlin[T <: KotlinConfig](
   }
 
   override def getName: String = "spotlessKotlin"
+
+  override def getClassName: String = config.getClass.getSimpleName
 }

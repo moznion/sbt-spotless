@@ -97,4 +97,6 @@ private[sbt] case class Groovy[T <: GroovyConfig](
   }
 
   override def getName: String = "spotlessGroovy"
+
+  override def getClassName: String = config.getClass.getSimpleName
 }

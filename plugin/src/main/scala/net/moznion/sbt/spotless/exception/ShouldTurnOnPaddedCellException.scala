@@ -16,10 +16,40 @@
 
 package net.moznion.sbt.spotless.exception
 
+import net.moznion.sbt.spotless.config.SpotlessPathConfig
+
 object ShouldTurnOnPaddedCellException {
-  private val message = "TODO message" // TODO
+  private def message(
+      taskName: String,
+      configClassName: String,
+      paddedCellDescriptionURL: String,
+      pathConfig: SpotlessPathConfig,
+  ): String =
+    s"""|You have a misbehaving rule which can't make up its mind.
+       |This means that spotlessCheck will fail even after spotlessApply has run.
+       |
+       |This is a bug in a formatting rule, not Spotless itself, but Spotless can
+       |work around this bug and generate helpful bug reports for the broken rule
+       |if you add 'paddedCell = true' to your build.sbt as such:
+       |
+       |  ${taskName} := ${configClassName}(
+       |    ...
+       |    paddedCell = true,
+       |  )
+       |
+       |The next time you run spotlessCheck, it will put helpful bug reports into
+       |"${pathConfig.paddedCellDiagnoseDir.toString}", and spotlessApply
+       |and spotlessCheck will be self-consistent from here on out.
+       |
+       |For details see: ${paddedCellDescriptionURL}""".stripMargin
 }
 
 case class ShouldTurnOnPaddedCellException(
-    private val message: String = ShouldTurnOnPaddedCellException.message,
-) extends Exception(message) {}
+    private val taskName: String,
+    private val configClassName: String,
+    private val paddedCellDescriptionURL: String,
+    private val pathConfig: SpotlessPathConfig,
+) extends Exception(
+      ShouldTurnOnPaddedCellException
+        .message(taskName, configClassName, paddedCellDescriptionURL, pathConfig),
+    ) {}

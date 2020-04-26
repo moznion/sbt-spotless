@@ -65,4 +65,6 @@ private[sbt] case class Scala[T <: ScalaConfig](
   }
 
   override def getName: String = "spotlessScala"
+
+  override def getClassName: String = config.getClass.getSimpleName
 }
