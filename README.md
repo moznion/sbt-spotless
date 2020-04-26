@@ -2,12 +2,6 @@
 
 An sbt plugin for [Spotless](https://github.com/diffplug/spotless) code formatter/checker.
 
-## Notice
-
-**This project is under development status.**
-
-There is the possibility that everything will be changed without notice.
-
 ## Installation
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.moznion.sbt/sbt-spotless/badge.svg?kill_cache=1)](https://search.maven.org/artifact/net.moznion.sbt/sbt-spotless/)
@@ -35,7 +29,7 @@ $ sbt spotlessApply
 ## Supported formatters
 
 |Format|Implemented|
-|------|------|
+|------|:----:|
 |Java|✅|
 |Scala|✅|
 |Kotlin|✅|
