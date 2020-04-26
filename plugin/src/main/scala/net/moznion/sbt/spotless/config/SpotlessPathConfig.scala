@@ -22,4 +22,6 @@ private[sbt] case class SpotlessPathConfig(
     baseDir: File,
     dynamicDependencyWorkingDir: File,
     dynamicDependencyCacheDir: File,
+    paddedCellWorkingDir: File,
+    paddedCellDiagnoseDir: File,
 )

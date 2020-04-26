@@ -17,13 +17,12 @@
 package net.moznion.sbt.spotless.task
 
 import java.io.File
-import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.extra.java.EclipseJdtFormatterStep
 import com.diffplug.spotless.generic.LicenseHeaderStep
 import com.diffplug.spotless.java.{GoogleJavaFormatStep, ImportOrderStep, RemoveUnusedImportsStep}
-import net.moznion.sbt.spotless.config.JavaConfig
+import net.moznion.sbt.spotless.config.{JavaConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
@@ -32,7 +31,7 @@ import _root_.scala.collection.JavaConverters._
 private[sbt] case class Java[T <: JavaConfig](
     private val javaFiles: Seq[File],
     private val config: T,
-    private val baseDir: Path,
+    private val pathConfig: SpotlessPathConfig,
     private val logger: Logger,
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
@@ -92,11 +91,11 @@ private[sbt] case class Java[T <: JavaConfig](
     )
 
     if (mode.applyFormat) {
-      applyFormat(steps, baseDir, config, logger)
+      applyFormat(steps, pathConfig, config, logger)
     }
 
     if (mode.check) {
-      checkFormat(steps, baseDir, config, logger)
+      checkFormat(steps, pathConfig, config, logger)
     }
   }
 
@@ -105,6 +104,8 @@ private[sbt] case class Java[T <: JavaConfig](
       return javaFiles
     }
 
-    resolveTarget(config.target, baseDir)
+    resolveTarget(config.target, pathConfig.baseDir)
   }
+
+  override def getName: String = "spotlessJava"
 }

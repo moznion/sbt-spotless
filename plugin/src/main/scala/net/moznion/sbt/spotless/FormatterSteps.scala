@@ -24,6 +24,9 @@ private case class FormatterSteps(
 ) {
   def getSteps: List[FormatterStep] = steps.reverse
 
+  /**
+    * @throws MultipleStepsException
+    */
   def addStep(step: FormatterStep): FormatterSteps = {
     if (getExistingStep(step.getName).nonEmpty) {
       throw MultipleStepsException(
@@ -57,6 +60,9 @@ private case class FormatterSteps(
     Option(idx)
   }
 
+  /**
+    * @throws ReplacingStepException
+    */
   def replaceStep(step: FormatterStep): List[FormatterStep] = {
     val maybeIdx = getExistingStepIdx(step.getName)
     if (maybeIdx.isEmpty) {

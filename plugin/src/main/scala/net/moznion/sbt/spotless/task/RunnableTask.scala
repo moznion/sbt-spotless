@@ -23,7 +23,7 @@ import java.nio.file.{Files, Path, StandardOpenOption}
 import com.diffplug.spotless.extra.integration.DiffMessageFormatter
 import com.diffplug.spotless.{Formatter, LineEnding, PaddedCell, PaddedCellBulk}
 import net.moznion.sbt.spotless.Target.{IsFile, IsString}
-import net.moznion.sbt.spotless.config.FormatterConfig
+import net.moznion.sbt.spotless.config.{FormatterConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.exception.{ShouldTurnOnPaddedCellException, ViolatedFormatException}
 import net.moznion.sbt.spotless.{FormatterSteps, Target}
 import sbt.util.Logger
@@ -31,29 +31,37 @@ import sbt.util.Logger
 import _root_.scala.collection.JavaConverters._
 
 trait RunnableTask[T <: FormatterConfig] {
+  private val paddedCellDescriptionURL =
+    "https://github.com/diffplug/spotless/blob/master/PADDEDCELL.md"
+
   private[spotless] def getTarget: Seq[File]
 
-  private[spotless] def resolveTarget(target: Seq[Target], baseDir: Path): Seq[File] = {
+  private[spotless] def resolveTarget(target: Seq[Target], baseDir: File): Seq[File] = {
     target.flatMap {
-      case IsFile(file)      => Seq(file)
-      case IsString(strPath) => better.files.File(baseDir).glob(strPath).map(found => found.toJava)
+      case IsFile(file) => Seq(file)
+      case IsString(strPath) =>
+        better.files.File(baseDir.toPath).glob(strPath).map(found => found.toJava)
     }
   }
 
+  /**
+    * @throws ShouldTurnOnPaddedCellException
+    * @throws ViolatedFormatException
+    */
   private[spotless] def checkFormat(
       steps: FormatterSteps,
-      baseDir: Path,
+      pathConfig: SpotlessPathConfig,
       config: T,
       logger: Logger,
   ): Unit = {
     val target = getTarget.filterNot(Option(config.targetExclude).toSet)
 
-    val formatter = buildFormatter(target, steps, baseDir, config)
+    val formatter = buildFormatter(target, steps, pathConfig.baseDir.toPath, config)
     try {
       val problemFiles = getTarget.filter(file => !formatter.isClean(file))
 
       if (config.paddedCell) {
-        checkWithPaddedCell(formatter, problemFiles, logger)
+        checkWithPaddedCell(formatter, problemFiles, pathConfig, logger)
         return
       }
 
@@ -79,20 +87,46 @@ trait RunnableTask[T <: FormatterConfig] {
   private def checkWithPaddedCell(
       formatter: Formatter,
       problemFiles: Seq[File],
+      pathConfig: SpotlessPathConfig,
       logger: Logger,
   ): Unit = {
-    logger.info("TODO implement here!")
+    if (problemFiles.isEmpty) {
+      logger.info(s"""|${getName} is in `paddedCell` mode, but it doesn't need to be.
+                      |If you remove that option, spotless will run ~2x faster.
+                      |For details see ${paddedCellDescriptionURL}""".stripMargin)
+    }
+
+    val stillFailingFiles = PaddedCellBulk.check(
+      pathConfig.paddedCellWorkingDir,
+      pathConfig.paddedCellDiagnoseDir,
+      formatter,
+      problemFiles.asJava,
+    )
+    if (!stillFailingFiles.isEmpty) {
+      throw ViolatedFormatException(
+        DiffMessageFormatter
+          .builder()
+          .runToFix("Run 'sbt spotlessApply' to fix these violations.")
+          .formatter(formatter)
+          .problemFiles(problemFiles.asJava)
+          .isPaddedCell(true)
+          .getMessage,
+      )
+    }
   }
 
+  /**
+    * @throws ShouldTurnOnPaddedCellException
+    */
   private[spotless] def applyFormat(
       steps: FormatterSteps,
-      baseDir: Path,
+      pathConfig: SpotlessPathConfig,
       config: T,
       logger: Logger,
   ): Seq[File] = {
     val target = getTarget.filterNot(Option(config.targetExclude).toSet)
 
-    val formatter = buildFormatter(target, steps, baseDir, config)
+    val formatter = buildFormatter(target, steps, pathConfig.baseDir.toPath, config)
     try {
       if (config.paddedCell) {
         return target.filter(file => {
@@ -159,4 +193,6 @@ trait RunnableTask[T <: FormatterConfig] {
       .exceptionPolicy(config.exceptionPolicy)
       .build()
   }
+
+  def getName: String;
 }

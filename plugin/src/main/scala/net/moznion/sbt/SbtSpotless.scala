@@ -17,7 +17,6 @@
 package net.moznion.sbt
 
 import java.io.File
-import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
 import net.moznion.sbt.spotless._
@@ -76,7 +75,6 @@ object SbtSpotless extends AutoPlugin {
         val defaultBaseDir: File = thisProject.value.base
         val config: SpotlessConfig = spotless.value
         val pathConfig: SpotlessPathConfig = config.toPathConfig(defaultBaseDir, target.value)
-        val baseDir: Path = pathConfig.baseDir.toPath
 
         val logger: Logger = streams.value.log
         val staticDeps: Seq[File] =
@@ -91,34 +89,34 @@ object SbtSpotless extends AutoPlugin {
         if (javaConfig.enabled) {
           val javaFiles =
             classPathFiles.filter(p => javaConfig.getExtensions.exists(ext => p.ext.equals(ext)))
-          Java(javaFiles, javaConfig, baseDir, logger).run(provisioner, mode)
+          Java(javaFiles, javaConfig, pathConfig, logger).run(provisioner, mode)
         }
 
         val scalaConfig: ScalaConfig = spotlessScala.value
         if (scalaConfig.enabled) {
           val scalaFiles =
             classPathFiles.filter(p => scalaConfig.getExtensions.exists(ext => p.ext.equals(ext)))
-          Scala(scalaFiles, scalaConfig, baseDir, logger).run(provisioner, mode)
+          Scala(scalaFiles, scalaConfig, pathConfig, logger).run(provisioner, mode)
         }
 
         val cppConfig: CppConfig = spotlessCpp.value
         if (cppConfig.enabled) {
-          Cpp(cppConfig, baseDir, logger).run(provisioner, mode)
+          Cpp(cppConfig, pathConfig, logger).run(provisioner, mode)
         }
 
         val groovyConfig: GroovyConfig = spotlessGroovy.value
         if (groovyConfig.enabled) {
-          Groovy(groovyConfig, baseDir, logger).run(provisioner, mode)
+          Groovy(groovyConfig, pathConfig, logger).run(provisioner, mode)
         }
 
         val kotlinConfig: KotlinConfig = spotlessKotlin.value
         if (kotlinConfig.enabled) {
-          Kotlin(kotlinConfig, baseDir, logger).run(provisioner, mode)
+          Kotlin(kotlinConfig, pathConfig, logger).run(provisioner, mode)
         }
 
         val sqlConfig: SqlConfig = spotlessSql.value
         if (sqlConfig.enabled) {
-          Sql(sqlConfig, baseDir, logger).run(provisioner, mode)
+          Sql(sqlConfig, pathConfig, logger).run(provisioner, mode)
         }
       }
   }

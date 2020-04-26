@@ -17,11 +17,10 @@
 package net.moznion.sbt.spotless.task
 
 import java.io.File
-import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.kotlin.KtLintStep
-import net.moznion.sbt.spotless.config.KotlinConfig
+import net.moznion.sbt.spotless.config.{KotlinConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
@@ -29,7 +28,7 @@ import _root_.scala.collection.JavaConverters._
 
 private[sbt] case class Kotlin[T <: KotlinConfig](
     private val config: T,
-    private val baseDir: Path,
+    private val pathConfig: SpotlessPathConfig,
     private val logger: Logger,
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
@@ -58,21 +57,23 @@ private[sbt] case class Kotlin[T <: KotlinConfig](
       .getOrElse(steps)
 
     if (mode.applyFormat) {
-      applyFormat(steps, baseDir, config, logger)
+      applyFormat(steps, pathConfig, config, logger)
     }
 
     if (mode.check) {
-      checkFormat(steps, baseDir, config, logger)
+      checkFormat(steps, pathConfig, config, logger)
     }
   }
 
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
       return List("kt", "ktm", "kts").flatMap(ext =>
-        better.files.File(baseDir).glob("**/*." + ext).map(found => found.toJava),
+        better.files.File(pathConfig.baseDir.toPath).glob("**/*." + ext).map(found => found.toJava),
       )
     }
 
-    resolveTarget(config.target, baseDir)
+    resolveTarget(config.target, pathConfig.baseDir)
   }
+
+  override def getName: String = "spotlessKotlin"
 }

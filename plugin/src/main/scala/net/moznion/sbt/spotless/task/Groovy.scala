@@ -17,13 +17,12 @@
 package net.moznion.sbt.spotless.task
 
 import java.io.File
-import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.extra.groovy.GrEclipseFormatterStep
 import com.diffplug.spotless.generic.LicenseHeaderStep
 import com.diffplug.spotless.java.ImportOrderStep
-import net.moznion.sbt.spotless.config.GroovyConfig
+import net.moznion.sbt.spotless.config.{GroovyConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
@@ -31,7 +30,7 @@ import _root_.scala.collection.JavaConverters._
 
 private[sbt] case class Groovy[T <: GroovyConfig](
     private val config: T,
-    private val baseDir: Path,
+    private val pathConfig: SpotlessPathConfig,
     private val logger: Logger,
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
@@ -77,19 +76,25 @@ private[sbt] case class Groovy[T <: GroovyConfig](
     )
 
     if (mode.applyFormat) {
-      applyFormat(steps, baseDir, config, logger)
+      applyFormat(steps, pathConfig, config, logger)
     }
 
     if (mode.check) {
-      checkFormat(steps, baseDir, config, logger)
+      checkFormat(steps, pathConfig, config, logger)
     }
   }
 
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
-      return better.files.File(baseDir).glob("**/*.groovy").map(found => found.toJava).toSeq
+      return better.files
+        .File(pathConfig.baseDir.toPath)
+        .glob("**/*.groovy")
+        .map(found => found.toJava)
+        .toSeq
     }
 
-    resolveTarget(config.target, baseDir)
+    resolveTarget(config.target, pathConfig.baseDir)
   }
+
+  override def getName: String = "spotlessGroovy"
 }

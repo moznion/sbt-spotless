@@ -17,18 +17,17 @@
 package net.moznion.sbt.spotless.task
 
 import java.io.File
-import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.scala.ScalaFmtStep
-import net.moznion.sbt.spotless.config.ScalaConfig
+import net.moznion.sbt.spotless.config.{ScalaConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
 private[sbt] case class Scala[T <: ScalaConfig](
     private val scalaFiles: Seq[File],
     private val config: T,
-    private val baseDir: Path,
+    private val pathConfig: SpotlessPathConfig,
     private val logger: Logger,
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
@@ -49,11 +48,11 @@ private[sbt] case class Scala[T <: ScalaConfig](
       .getOrElse(steps)
 
     if (mode.applyFormat) {
-      applyFormat(steps, baseDir, config, logger)
+      applyFormat(steps, pathConfig, config, logger)
     }
 
     if (mode.check) {
-      checkFormat(steps, baseDir, config, logger)
+      checkFormat(steps, pathConfig, config, logger)
     }
   }
 
@@ -62,6 +61,8 @@ private[sbt] case class Scala[T <: ScalaConfig](
       return scalaFiles
     }
 
-    resolveTarget(config.target, baseDir)
+    resolveTarget(config.target, pathConfig.baseDir)
   }
+
+  override def getName: String = "spotlessScala"
 }

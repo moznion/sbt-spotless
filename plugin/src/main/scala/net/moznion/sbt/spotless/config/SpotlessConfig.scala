@@ -22,7 +22,8 @@ import net.moznion.sbt.spotless.Target
 import net.moznion.sbt.spotless.Target.{IsFile, IsString}
 
 object SpotlessConfig {
-  private val dynamicDependencyCacheDir = ".spotlessDepCache"
+  private val defaultDynamicDependencyCacheDir = ".spotless-dep-cache"
+  private val defaultPaddedCellDiagnoseDir = ".spotless-padded-cell-diag"
 }
 
 /**
@@ -40,6 +41,8 @@ case class SpotlessConfig(
     dynamicDependencyCacheDir: Target = null,
     disableDynamicDependencyCache: Boolean = false,
     disableDynamicDependencyResolving: Boolean = false,
+    paddedCellWorkingDir: Target = null,
+    paddedCellDiagnoseDir: Target = null,
 ) {
   private[sbt] def toPathConfig(
       defaultBaseDir: File,
@@ -59,9 +62,24 @@ case class SpotlessConfig(
       }
 
     val defaultDynamicDependencyCacheDir: Target =
-      new File(dynamicDependencyWorkingDir, SpotlessConfig.dynamicDependencyCacheDir)
+      new File(dynamicDependencyWorkingDir, SpotlessConfig.defaultDynamicDependencyCacheDir)
     val dynamicDependencyCacheDir: File =
       Option(this.dynamicDependencyCacheDir).getOrElse(defaultDynamicDependencyCacheDir) match {
+        case IsString(strPath) => new File(baseDir, strPath)
+        case IsFile(file)      => file
+      }
+
+    val defaultPaddedCellWorkingDir: Target = defaultTargetDirectory
+    val paddedCellWorkingDir: File =
+      Option(this.paddedCellWorkingDir).getOrElse(defaultPaddedCellWorkingDir) match {
+        case IsString(strPath) => new File(baseDir, strPath)
+        case IsFile(file)      => file
+      }
+
+    val defaultPaddedCellDiagnoseDir: Target =
+      new File(paddedCellWorkingDir, SpotlessConfig.defaultPaddedCellDiagnoseDir)
+    val paddedCellDiagnoseDir: File =
+      Option(this.paddedCellDiagnoseDir).getOrElse(defaultPaddedCellDiagnoseDir) match {
         case IsString(strPath) => new File(baseDir, strPath)
         case IsFile(file)      => file
       }
@@ -70,6 +88,8 @@ case class SpotlessConfig(
       baseDir = baseDir,
       dynamicDependencyWorkingDir = dynamicDependencyWorkingDir,
       dynamicDependencyCacheDir = dynamicDependencyCacheDir,
+      paddedCellWorkingDir = paddedCellWorkingDir,
+      paddedCellDiagnoseDir = paddedCellDiagnoseDir,
     )
   }
 }

@@ -17,12 +17,11 @@
 package net.moznion.sbt.spotless.task
 
 import java.io.File
-import java.nio.file.Path
 
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.cpp.CppDefaults
 import com.diffplug.spotless.extra.cpp.EclipseCdtFormatterStep
-import net.moznion.sbt.spotless.config.CppConfig
+import net.moznion.sbt.spotless.config.{CppConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
 import sbt.util.Logger
 
@@ -30,7 +29,7 @@ import _root_.scala.collection.JavaConverters._
 
 private[sbt] case class Cpp[T <: CppConfig](
     private val config: T,
-    private val baseDir: Path,
+    private val pathConfig: SpotlessPathConfig,
     private val logger: Logger,
 ) extends RunnableTask[T] {
   def run(
@@ -67,21 +66,23 @@ private[sbt] case class Cpp[T <: CppConfig](
       .getOrElse(steps)
 
     if (mode.applyFormat) {
-      applyFormat(steps, baseDir, config, logger)
+      applyFormat(steps, pathConfig, config, logger)
     }
 
     if (mode.check) {
-      checkFormat(steps, baseDir, config, logger)
+      checkFormat(steps, pathConfig, config, logger)
     }
   }
 
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
       return CppDefaults.FILE_FILTER.asScala.flatMap(filter =>
-        better.files.File(baseDir).glob(filter).map(found => found.toJava),
+        better.files.File(pathConfig.baseDir.toPath).glob(filter).map(found => found.toJava),
       )
     }
 
-    resolveTarget(config.target, baseDir)
+    resolveTarget(config.target, pathConfig.baseDir)
   }
+
+  override def getName: String = "spotlessCpp"
 }
