@@ -32,10 +32,7 @@ private[sbt] case class Cpp[T <: CppConfig](
     private val pathConfig: SpotlessPathConfig,
     private val logger: Logger,
 ) extends RunnableTask[T] {
-  def run(
-      provisioner: Provisioner,
-      mode: RunningMode,
-  ): Unit = {
+  def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
       return
     }

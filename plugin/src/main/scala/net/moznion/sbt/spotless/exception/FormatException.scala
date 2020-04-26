@@ -16,4 +16,4 @@
 
 package net.moznion.sbt.spotless.exception
 
-case class ViolatedFormatException(msg: String) extends FormatException(msg) {}
+abstract class FormatException(message: String) extends Exception(message)

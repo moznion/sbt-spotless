@@ -21,11 +21,11 @@ import java.nio.charset.Charset
 import java.nio.file.{Files, Path, StandardOpenOption}
 
 import com.diffplug.spotless.extra.integration.DiffMessageFormatter
-import com.diffplug.spotless.{Formatter, LineEnding, PaddedCell, PaddedCellBulk}
+import com.diffplug.spotless.{Formatter, LineEnding, PaddedCell, PaddedCellBulk, Provisioner}
 import net.moznion.sbt.spotless.Target.{IsFile, IsString}
 import net.moznion.sbt.spotless.config.{FormatterConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.exception.{ShouldTurnOnPaddedCellException, ViolatedFormatException}
-import net.moznion.sbt.spotless.{FormatterSteps, Target}
+import net.moznion.sbt.spotless.{FormatterSteps, RunningMode, Target}
 import sbt.util.Logger
 
 import _root_.scala.collection.JavaConverters._
@@ -35,6 +35,8 @@ trait RunnableTask[T <: FormatterConfig] {
     "https://github.com/diffplug/spotless/blob/master/PADDEDCELL.md"
 
   private[spotless] def getTarget: Seq[File]
+
+  private[sbt] def run(provisioner: Provisioner, mode: RunningMode): Unit
 
   private[spotless] def resolveTarget(target: Seq[Target], baseDir: File): Seq[File] = {
     target.flatMap {
@@ -96,9 +98,9 @@ trait RunnableTask[T <: FormatterConfig] {
       logger: Logger,
   ): Unit = {
     if (problemFiles.isEmpty) {
-      logger.info(s"""|${getName} is in `paddedCell` mode, but it doesn't need to be.
+      logger.info(s"""|$getName is in `paddedCell` mode, but it doesn't need to be.
                       |If you remove that option, spotless will run ~2x faster.
-                      |For details see ${paddedCellDescriptionURL}""".stripMargin)
+                      |For details see $paddedCellDescriptionURL""".stripMargin)
     }
 
     val stillFailingFiles = PaddedCellBulk.check(
@@ -204,6 +206,6 @@ trait RunnableTask[T <: FormatterConfig] {
       .build()
   }
 
-  def getName: String;
-  def getClassName: String;
+  def getName: String
+  def getClassName: String
 }

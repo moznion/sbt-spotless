@@ -21,6 +21,7 @@ import java.io.File
 import com.diffplug.spotless.Provisioner
 import net.moznion.sbt.spotless._
 import net.moznion.sbt.spotless.config._
+import net.moznion.sbt.spotless.exception.FormatException
 import net.moznion.sbt.spotless.task._
 import sbt.Keys._
 import sbt.{Def, _}
@@ -55,8 +56,11 @@ object SbtSpotless extends AutoPlugin {
 
   override def projectSettings: Seq[Def.Setting[_]] =
     super.projectSettings ++ Seq(
-      spotlessCheck := supplySpotlessTaskInitiator(RunningMode(check = true)).value,
-      spotlessApply := supplySpotlessTaskInitiator(RunningMode(check = true, applyFormat = true)).value,
+      spotlessCheck := supplySpotlessTaskInitiator(RunningMode(check = true), "spotlessCheck").value,
+      spotlessApply := supplySpotlessTaskInitiator(
+        RunningMode(check = true, applyFormat = true),
+        "spotlessApply",
+      ).value,
     )
 
   override def globalSettings: Seq[Def.Setting[_]] = Seq(
@@ -69,8 +73,8 @@ object SbtSpotless extends AutoPlugin {
     spotlessSql := SqlConfig(enabled = false),
   )
 
-  private val supplySpotlessTaskInitiator: RunningMode => Def.Initialize[Task[Unit]] = {
-    mode: RunningMode =>
+  private val supplySpotlessTaskInitiator: (RunningMode, String) => Def.Initialize[Task[Unit]] = {
+    (mode: RunningMode, taskName: String) =>
       Def.task {
         val defaultBaseDir: File = thisProject.value.base
         val config: SpotlessConfig = spotless.value
@@ -86,37 +90,59 @@ object SbtSpotless extends AutoPlugin {
           (sources in Compile).value.toList ++ (sources in Test).value.toList
 
         val javaConfig: JavaConfig = spotlessJava.value
+
+        var tasksToRun: Seq[RunnableTask[_]] = Seq()
+
         if (javaConfig.enabled) {
           val javaFiles =
             classPathFiles.filter(p => javaConfig.getExtensions.exists(ext => p.ext.equals(ext)))
-          Java(javaFiles, javaConfig, pathConfig, logger).run(provisioner, mode)
+          tasksToRun :+= Java(javaFiles, javaConfig, pathConfig, logger)
         }
 
         val scalaConfig: ScalaConfig = spotlessScala.value
         if (scalaConfig.enabled) {
           val scalaFiles =
             classPathFiles.filter(p => scalaConfig.getExtensions.exists(ext => p.ext.equals(ext)))
-          Scala(scalaFiles, scalaConfig, pathConfig, logger).run(provisioner, mode)
+          tasksToRun :+= Scala(scalaFiles, scalaConfig, pathConfig, logger)
         }
 
         val cppConfig: CppConfig = spotlessCpp.value
         if (cppConfig.enabled) {
-          Cpp(cppConfig, pathConfig, logger).run(provisioner, mode)
+          tasksToRun :+= Cpp(cppConfig, pathConfig, logger)
         }
 
         val groovyConfig: GroovyConfig = spotlessGroovy.value
         if (groovyConfig.enabled) {
-          Groovy(groovyConfig, pathConfig, logger).run(provisioner, mode)
+          tasksToRun :+= Groovy(groovyConfig, pathConfig, logger)
         }
 
         val kotlinConfig: KotlinConfig = spotlessKotlin.value
         if (kotlinConfig.enabled) {
-          Kotlin(kotlinConfig, pathConfig, logger).run(provisioner, mode)
+          tasksToRun :+= Kotlin(kotlinConfig, pathConfig, logger)
         }
 
         val sqlConfig: SqlConfig = spotlessSql.value
         if (sqlConfig.enabled) {
-          Sql(sqlConfig, pathConfig, logger).run(provisioner, mode)
+          tasksToRun :+= Sql(sqlConfig, pathConfig, logger)
+        }
+
+        val succeeded: Boolean = tasksToRun
+          .map(task =>
+            try {
+              task.run(provisioner, mode)
+              true
+            } catch {
+              case e: FormatException =>
+                logger.error(e.getMessage)
+                false
+            },
+          )
+          .reduce((acc, taskResult) => acc && taskResult)
+
+        if (!succeeded) {
+          throw new MessageOnlyException(
+            s"Failed to run $taskName, please refer to the above logs.",
+          )
         }
       }
   }

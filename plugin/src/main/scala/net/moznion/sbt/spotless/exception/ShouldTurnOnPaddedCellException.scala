@@ -32,7 +32,7 @@ object ShouldTurnOnPaddedCellException {
        |work around this bug and generate helpful bug reports for the broken rule
        |if you add 'paddedCell = true' to your build.sbt as such:
        |
-       |  ${taskName} := ${configClassName}(
+       |  $taskName := $configClassName(
        |    ...
        |    paddedCell = true,
        |  )
@@ -41,7 +41,7 @@ object ShouldTurnOnPaddedCellException {
        |"${pathConfig.paddedCellDiagnoseDir.toString}", and spotlessApply
        |and spotlessCheck will be self-consistent from here on out.
        |
-       |For details see: ${paddedCellDescriptionURL}""".stripMargin
+       |For details see: $paddedCellDescriptionURL""".stripMargin
 }
 
 case class ShouldTurnOnPaddedCellException(
@@ -49,7 +49,7 @@ case class ShouldTurnOnPaddedCellException(
     private val configClassName: String,
     private val paddedCellDescriptionURL: String,
     private val pathConfig: SpotlessPathConfig,
-) extends Exception(
+) extends FormatException(
       ShouldTurnOnPaddedCellException
         .message(taskName, configClassName, paddedCellDescriptionURL, pathConfig),
     ) {}
