@@ -21,8 +21,7 @@ import java.io.File
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.kotlin.KtLintStep
 import net.moznion.sbt.spotless.config.{KotlinConfig, SpotlessPathConfig}
-import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
-import sbt.util.Logger
+import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode}
 
 import _root_.scala.collection.JavaConverters._
 

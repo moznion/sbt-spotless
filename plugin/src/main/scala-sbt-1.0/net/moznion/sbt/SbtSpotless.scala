@@ -80,11 +80,18 @@ object SbtSpotless extends AutoPlugin {
         val config: SpotlessConfig = spotless.value
         val pathConfig: SpotlessPathConfig = config.toPathConfig(defaultBaseDir, target.value)
 
-        val logger: Logger = streams.value.log
+        val sbtLogger: sbt.util.Logger = streams.value.log
+        val logger: net.moznion.sbt.spotless.Logger = new SbtSpotlessLogger(sbtLogger)
         val staticDeps: Seq[File] =
           (dependencyClasspathAsJars in Compile).value.map(dep => dep.data)
         val provisioner: Provisioner =
-          SbtProvisioner.supplyProvisioner(config, pathConfig, staticDeps, logger)
+          SbtProvisioner.supplyProvisioner(
+            config,
+            pathConfig,
+            staticDeps,
+            new IvyDependencyResolver(sbtLogger),
+            logger,
+          )
 
         lazy val classPathFiles: Seq[File] =
           (sources in Compile).value.toList ++ (sources in Test).value.toList

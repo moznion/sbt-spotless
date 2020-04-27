@@ -24,9 +24,6 @@ import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
 import net.moznion.sbt.spotless.config.{SpotlessConfig, SpotlessPathConfig}
-import sbt.librarymanagement.ModuleID
-import sbt.librarymanagement.ivy.{InlineIvyConfiguration, IvyDependencyResolution}
-import sbt.util.Logger
 
 import scala.util.matching.Regex
 
@@ -34,15 +31,16 @@ private object DynamicDependencyResolver {
   private val charEncoding: Charset = StandardCharsets.UTF_8
   private val mavenCoordinateRegex: Regex = "^(.+):(.+):(.+)$".r
 
-  private def mavenCoordToModuleID(mavenCoord: String): ModuleID = {
+  private def mavenCoordToModuleIDLeaves(mavenCoord: String): (String, String, String) = {
     val m = mavenCoordinateRegex.findAllIn(mavenCoord)
-    ModuleID(m.group(1), m.group(2), m.group(3))
+    (m.group(1), m.group(2), m.group(3))
   }
 }
 
 private class DynamicDependencyResolver(
     private val config: SpotlessConfig,
     private val pathConfig: SpotlessPathConfig,
+    private val dependencyResolver: DependencyResolver,
     private val logger: Logger,
 ) {
   private var cache: Map[String, Option[Seq[File]]] = Map()
@@ -60,7 +58,7 @@ private class DynamicDependencyResolver(
         val cacheFile = new File(pathConfig.dynamicDependencyCacheDir, mavenCoord)
         val fileCached: Option[Seq[File]] =
           if (cacheFile.exists() && !config.disableDynamicDependencyCache) {
-            resolveFileCache(mavenCoord, cacheFile.toPath) match {
+            resolveFileCache(cacheFile.toPath) match {
               case Right(files) => Option(files)
               case Left(_)      => Option.empty
             }
@@ -69,16 +67,15 @@ private class DynamicDependencyResolver(
           }
 
         fileCached.getOrElse((() => {
-          val moduleID = DynamicDependencyResolver.mavenCoordToModuleID(mavenCoord)
-          logger.debug("no cache. retrieving module ID: " + moduleID)
+          val (org, name, rev) = DynamicDependencyResolver.mavenCoordToModuleIDLeaves(mavenCoord)
+          logger.debug(s"no cache. retrieving module ID: $org:$name:$rev")
 
-          val retrieved = IvyDependencyResolution(
-            InlineIvyConfiguration().withLog(logger),
-          ).retrieve(moduleID, None, pathConfig.dynamicDependencyWorkingDir, logger)
+          val retrieved =
+            dependencyResolver.retrieve(org, name, rev, pathConfig.dynamicDependencyWorkingDir)
           val resolved: Option[Seq[File]] = retrieved match {
             case Right(retrieveFiles) => Option(retrieveFiles)
-            case Left(warn) =>
-              logger.warn(warn.resolveException.getLocalizedMessage)
+            case Left(err) =>
+              logger.warn(err.getLocalizedMessage)
               Option.empty
           }
 
@@ -99,7 +96,7 @@ private class DynamicDependencyResolver(
     }
   }
 
-  private def resolveFileCache(mavenCoord: String, cacheFilePath: Path): Either[Unit, Seq[File]] = {
+  private def resolveFileCache(cacheFilePath: Path): Either[Unit, Seq[File]] = {
     decode[DependencyCache](
       new String(Files.readAllBytes(cacheFilePath), DynamicDependencyResolver.charEncoding),
     ) match {

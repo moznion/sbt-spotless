@@ -21,12 +21,11 @@ import java.nio.charset.Charset
 import java.nio.file.{Files, Path, StandardOpenOption}
 
 import com.diffplug.spotless.extra.integration.DiffMessageFormatter
-import com.diffplug.spotless.{Formatter, LineEnding, PaddedCell, PaddedCellBulk, Provisioner}
+import com.diffplug.spotless._
 import net.moznion.sbt.spotless.Target.{IsFile, IsString}
 import net.moznion.sbt.spotless.config.{FormatterConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.exception.{ShouldTurnOnPaddedCellException, ViolatedFormatException}
-import net.moznion.sbt.spotless.{FormatterSteps, RunningMode, Target}
-import sbt.util.Logger
+import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode, Target}
 
 import _root_.scala.collection.JavaConverters._
 

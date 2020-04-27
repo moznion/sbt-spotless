@@ -21,8 +21,7 @@ import java.io.File
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.scala.ScalaFmtStep
 import net.moznion.sbt.spotless.config.{ScalaConfig, SpotlessPathConfig}
-import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
-import sbt.util.Logger
+import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode}
 
 private[sbt] case class Scala[T <: ScalaConfig](
     private val scalaFiles: Seq[File],

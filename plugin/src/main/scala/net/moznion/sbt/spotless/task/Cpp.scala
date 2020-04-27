@@ -22,8 +22,7 @@ import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.cpp.CppDefaults
 import com.diffplug.spotless.extra.cpp.EclipseCdtFormatterStep
 import net.moznion.sbt.spotless.config.{CppConfig, SpotlessPathConfig}
-import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
-import sbt.util.Logger
+import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode}
 
 import _root_.scala.collection.JavaConverters._
 
