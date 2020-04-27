@@ -51,10 +51,10 @@ lazy val plugin = project
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
-      releaseStepCommandAndRemaining("+publishSigned"),
+      releaseStepCommandAndRemaining("publishSigned"),
+      releaseStepCommand("sonatypeBundleRelease"),
       setNextVersion,
       commitNextVersion,
-      releaseStepCommand("sonatypeBundleRelease"),
       pushChanges,
     ),
   )
