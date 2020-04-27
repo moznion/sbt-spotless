@@ -9,7 +9,7 @@ An sbt plugin for [Spotless](https://github.com/diffplug/spotless) code formatte
 in your `plugins.sbt`:
 
 ```
-addSbtPlugin("net.moznion.sbt" % "sbt-spotless" % "0.0.1-beta1")
+addSbtPlugin("net.moznion.sbt" % "sbt-spotless" % "0.0.1")
 ```
 
 ## Usage
