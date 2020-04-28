@@ -28,10 +28,10 @@ class IvyDependencyResolver(private val logger: Logger) extends DependencyResolv
       org: String,
       name: String,
       rev: String,
-      dynamicDependencyWorkingDir: File,
+      dynamicDependencyWorkingDir: File
   ): Either[RuntimeException, Seq[File]] = {
     IvyDependencyResolution(
-      InlineIvyConfiguration().withLog(logger),
+      InlineIvyConfiguration().withLog(logger)
     ).retrieve(ModuleID(org, name, rev), None, dynamicDependencyWorkingDir, logger) match {
       case Left(warn)            => Left(warn.resolveException)
       case Right(retrievedFiles) => Right(retrievedFiles)

@@ -41,7 +41,7 @@ case class ScalaConfig(
     override val target: Seq[Target] = null,
     override val targetExclude: Seq[Target] = null,
     override val enabled: Boolean = true,
-    scalafmt: ScalafmtConfig = null,
+    scalafmt: ScalafmtConfig = null
 ) extends FormatterConfig(
       paddedCell,
       lineEndings,
@@ -49,7 +49,7 @@ case class ScalaConfig(
       exceptionPolicy,
       target,
       targetExclude,
-      enabled,
+      enabled
     )
     with ExtensionsSupplier {
   private[sbt] override def getExtensions: Seq[String] = {

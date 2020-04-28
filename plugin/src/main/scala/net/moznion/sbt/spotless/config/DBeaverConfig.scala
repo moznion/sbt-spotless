@@ -24,5 +24,5 @@ import java.io.File
   * @param configFiles A seq of configuration files for DBeaver.
   */
 case class DBeaverConfig(
-    configFiles: Seq[File] = null,
+    configFiles: Seq[File] = null
 ) {}

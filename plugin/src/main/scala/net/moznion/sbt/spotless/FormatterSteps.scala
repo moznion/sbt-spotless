@@ -20,7 +20,7 @@ import com.diffplug.spotless.{FormatterStep, SerializableFileFilter}
 import net.moznion.sbt.spotless.exception.{MultipleStepsException, ReplacingStepException}
 
 private case class FormatterSteps(
-    private var steps: List[FormatterStep] = List(),
+    private var steps: List[FormatterStep] = List()
 ) {
   def getSteps: List[FormatterStep] = steps.reverse
 
@@ -30,7 +30,7 @@ private case class FormatterSteps(
   def addStep(step: FormatterStep): FormatterSteps = {
     if (getExistingStep(step.getName).nonEmpty) {
       throw MultipleStepsException(
-        s"multiple steps with name '${step.getName}' for spotless format", // TODO more meaningful message
+        s"multiple steps with name '${step.getName}' for spotless format" // TODO more meaningful message
       )
     }
     FormatterSteps(steps :+ step)
@@ -38,7 +38,7 @@ private case class FormatterSteps(
 
   def filterByName(
       stepName: String,
-      filter: SerializableFileFilter,
+      filter: SerializableFileFilter
   ): FormatterSteps = {
     FormatterSteps(steps.map(step => {
       if (stepName.equals(step.getName)) {
@@ -67,7 +67,7 @@ private case class FormatterSteps(
     val maybeIdx = getExistingStepIdx(step.getName)
     if (maybeIdx.isEmpty) {
       throw ReplacingStepException(
-        s"cannot replace step '${step.getName}' for spotless format", // TODO more meaningful message
+        s"cannot replace step '${step.getName}' for spotless format" // TODO more meaningful message
       )
     }
     steps.updated(maybeIdx.get, step)

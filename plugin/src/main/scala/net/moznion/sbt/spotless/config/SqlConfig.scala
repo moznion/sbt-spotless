@@ -41,7 +41,7 @@ case class SqlConfig(
     override val target: Seq[Target] = null,
     override val targetExclude: Seq[Target] = null,
     override val enabled: Boolean = true,
-    dbeaver: DBeaverConfig = null,
+    dbeaver: DBeaverConfig = null
 ) extends FormatterConfig(
       paddedCell,
       lineEndings,
@@ -49,5 +49,5 @@ case class SqlConfig(
       exceptionPolicy,
       target,
       targetExclude,
-      enabled,
+      enabled
     ) {}

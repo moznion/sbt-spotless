@@ -28,7 +28,7 @@ import _root_.scala.collection.JavaConverters._
 private[sbt] case class Sql[T <: SqlConfig](
     private val config: T,
     private val pathConfig: SpotlessPathConfig,
-    private val logger: Logger,
+    private val logger: Logger
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {

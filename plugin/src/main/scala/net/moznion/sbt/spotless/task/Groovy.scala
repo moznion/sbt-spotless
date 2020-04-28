@@ -30,7 +30,7 @@ import _root_.scala.collection.JavaConverters._
 private[sbt] case class Groovy[T <: GroovyConfig](
     private val config: T,
     private val pathConfig: SpotlessPathConfig,
-    private val logger: Logger,
+    private val logger: Logger
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
@@ -71,7 +71,7 @@ private[sbt] case class Groovy[T <: GroovyConfig](
 
     steps = steps.filterByName(
       LicenseHeaderStep.name(),
-      LicenseHeaderStep.unsupportedJvmFilesFilter(),
+      LicenseHeaderStep.unsupportedJvmFilesFilter()
     )
 
     if (mode.applyFormat) {

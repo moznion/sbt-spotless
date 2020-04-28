@@ -27,7 +27,7 @@ private[sbt] case class Scala[T <: ScalaConfig](
     private val scalaFiles: Seq[File],
     private val config: T,
     private val pathConfig: SpotlessPathConfig,
-    private val logger: Logger,
+    private val logger: Logger
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
@@ -41,7 +41,7 @@ private[sbt] case class Scala[T <: ScalaConfig](
         val version: String =
           Option(scalafmt.version).getOrElse(ScalaFmtStep.defaultVersion())
         steps.addStep(
-          ScalaFmtStep.create(version, provisioner, scalafmt.configFile),
+          ScalaFmtStep.create(version, provisioner, scalafmt.configFile)
         )
       })
       .getOrElse(steps)

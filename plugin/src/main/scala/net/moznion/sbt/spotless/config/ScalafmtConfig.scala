@@ -26,5 +26,5 @@ import java.io.File
   */
 case class ScalafmtConfig(
     version: String = null,
-    configFile: File = null,
+    configFile: File = null
 ) {}

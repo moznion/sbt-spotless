@@ -59,8 +59,8 @@ object SbtSpotless extends AutoPlugin {
       spotlessCheck := supplySpotlessTaskInitiator(RunningMode(check = true), "spotlessCheck").value,
       spotlessApply := supplySpotlessTaskInitiator(
         RunningMode(check = true, applyFormat = true),
-        "spotlessApply",
-      ).value,
+        "spotlessApply"
+      ).value
     )
 
   override def globalSettings: Seq[Def.Setting[_]] = Seq(
@@ -70,7 +70,7 @@ object SbtSpotless extends AutoPlugin {
     spotlessCpp := CppConfig(enabled = false),
     spotlessGroovy := GroovyConfig(enabled = false),
     spotlessKotlin := KotlinConfig(enabled = false),
-    spotlessSql := SqlConfig(enabled = false),
+    spotlessSql := SqlConfig(enabled = false)
   )
 
   private val supplySpotlessTaskInitiator: (RunningMode, String) => Def.Initialize[Task[Unit]] = {
@@ -90,7 +90,7 @@ object SbtSpotless extends AutoPlugin {
             pathConfig,
             staticDeps,
             new IvyDependencyResolver(sbtLogger),
-            logger,
+            logger
           )
 
         lazy val classPathFiles: Seq[File] =
@@ -142,13 +142,13 @@ object SbtSpotless extends AutoPlugin {
               case e: FormatException =>
                 logger.error(e.getMessage)
                 false
-            },
+            }
           )
           .reduce((acc, taskResult) => acc && taskResult)
 
         if (!succeeded) {
           throw new MessageOnlyException(
-            s"Failed to run $taskName, please refer to the above logs.",
+            s"Failed to run $taskName, please refer to the above logs."
           )
         }
       }

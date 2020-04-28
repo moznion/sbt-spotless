@@ -29,7 +29,7 @@ import _root_.scala.collection.JavaConverters._
 private[sbt] case class Cpp[T <: CppConfig](
     private val config: T,
     private val pathConfig: SpotlessPathConfig,
-    private val logger: Logger,
+    private val logger: Logger
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
@@ -73,7 +73,7 @@ private[sbt] case class Cpp[T <: CppConfig](
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
       return CppDefaults.FILE_FILTER.asScala.flatMap(filter =>
-        better.files.File(pathConfig.baseDir.toPath).glob(filter).map(found => found.toJava),
+        better.files.File(pathConfig.baseDir.toPath).glob(filter).map(found => found.toJava)
       )
     }
 

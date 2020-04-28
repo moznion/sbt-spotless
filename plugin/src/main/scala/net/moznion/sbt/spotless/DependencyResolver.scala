@@ -23,6 +23,6 @@ trait DependencyResolver {
       org: String,
       name: String,
       rev: String,
-      dynamicDependencyWorkingDir: File,
+      dynamicDependencyWorkingDir: File
   ): Either[RuntimeException, Seq[File]]
 }

@@ -21,7 +21,7 @@ import com.diffplug.spotless.generic.LicenseHeaderStep
 
 abstract private[config] class LicenseHeaderConfig(
     private var _delimiter: String,
-    protected var yearSeparator: String = LicenseHeaderStep.defaultYearDelimiter(),
+    protected var yearSeparator: String = LicenseHeaderStep.defaultYearDelimiter()
 ) {
   def delimiter: String = _delimiter
 

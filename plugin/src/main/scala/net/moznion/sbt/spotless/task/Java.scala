@@ -31,7 +31,7 @@ private[sbt] case class Java[T <: JavaConfig](
     private val javaFiles: Seq[File],
     private val config: T,
     private val pathConfig: SpotlessPathConfig,
-    private val logger: Logger,
+    private val logger: Logger
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
@@ -86,7 +86,7 @@ private[sbt] case class Java[T <: JavaConfig](
 
     steps = steps.filterByName(
       LicenseHeaderStep.name(),
-      LicenseHeaderStep.unsupportedJvmFilesFilter(),
+      LicenseHeaderStep.unsupportedJvmFilesFilter()
     )
 
     if (mode.applyFormat) {

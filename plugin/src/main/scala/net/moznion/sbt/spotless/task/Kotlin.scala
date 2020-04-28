@@ -28,7 +28,7 @@ import _root_.scala.collection.JavaConverters._
 private[sbt] case class Kotlin[T <: KotlinConfig](
     private val config: T,
     private val pathConfig: SpotlessPathConfig,
-    private val logger: Logger,
+    private val logger: Logger
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
@@ -67,7 +67,7 @@ private[sbt] case class Kotlin[T <: KotlinConfig](
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
       return List("kt", "ktm", "kts").flatMap(ext =>
-        better.files.File(pathConfig.baseDir.toPath).glob("**/*." + ext).map(found => found.toJava),
+        better.files.File(pathConfig.baseDir.toPath).glob("**/*." + ext).map(found => found.toJava)
       )
     }
 

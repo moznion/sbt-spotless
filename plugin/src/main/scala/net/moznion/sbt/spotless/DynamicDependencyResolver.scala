@@ -16,13 +16,18 @@
 
 package net.moznion.sbt.spotless
 
-import java.io.File
+import java.io.{
+  ByteArrayInputStream,
+  ByteArrayOutputStream,
+  File,
+  ObjectInputStream,
+  ObjectOutputStream
+}
 import java.nio.charset.{Charset, StandardCharsets}
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.util.Base64
 
-import io.circe.generic.auto._
-import io.circe.parser._
-import io.circe.syntax._
+import net.moznion.sbt.spotless.DependencyCache.DependencyPaths
 import net.moznion.sbt.spotless.config.{SpotlessConfig, SpotlessPathConfig}
 
 import scala.util.matching.Regex
@@ -41,7 +46,7 @@ private class DynamicDependencyResolver(
     private val config: SpotlessConfig,
     private val pathConfig: SpotlessPathConfig,
     private val dependencyResolver: DependencyResolver,
-    private val logger: Logger,
+    private val logger: Logger
 ) {
   private var cache: Map[String, Option[Seq[File]]] = Map()
 
@@ -81,13 +86,28 @@ private class DynamicDependencyResolver(
 
           if (!config.disableDynamicDependencyCache) {
             cache += (mavenCoord -> resolved)
+
+            val byteStream = new ByteArrayOutputStream()
+            val serialized: Array[Byte] =
+              try {
+                val objectStream = new ObjectOutputStream(byteStream)
+                try {
+                  val dependencyPaths: DependencyPaths = resolved.map(r => r.map(f => f.toString))
+                  objectStream.writeObject(dependencyPaths)
+                } finally {
+                  objectStream.close()
+                }
+                Base64.getEncoder.encode(byteStream.toByteArray)
+              } finally {
+                byteStream.close()
+              }
+
             Files.write(
               Paths.get(cacheFile.toURI),
-              DependencyCache(resolved.map(r => r.map(f => f.toString))).asJson.noSpaces
-                .getBytes(DynamicDependencyResolver.charEncoding),
+              serialized,
               StandardOpenOption.CREATE,
               StandardOpenOption.WRITE,
-              StandardOpenOption.TRUNCATE_EXISTING,
+              StandardOpenOption.TRUNCATE_EXISTING
             )
           }
 
@@ -97,26 +117,27 @@ private class DynamicDependencyResolver(
   }
 
   private def resolveFileCache(cacheFilePath: Path): Either[Unit, Seq[File]] = {
-    decode[DependencyCache](
-      new String(Files.readAllBytes(cacheFilePath), DynamicDependencyResolver.charEncoding),
-    ) match {
-      case Right(cached) =>
-        cached.dependencyPaths match {
-          case Some(dependencyPaths) =>
-            val depFiles = dependencyPaths.map(path => new File(path))
-            if (depFiles.forall(file => file.exists())) {
-              logger.debug("cached jar: use that")
-              return Right(depFiles)
-            }
-            logger.warn("there are no jar files that are caching; it will resolve the dependencies")
-            Left(Unit)
-          case None =>
-            logger.debug("cached jar: empty")
-            Right(Seq())
+    val deserialized = Base64.getDecoder.decode(Files.readAllBytes(cacheFilePath))
+    val objectInputStream = new ObjectInputStream(new ByteArrayInputStream(deserialized))
+    val cached =
+      try {
+        objectInputStream.readObject().asInstanceOf[DependencyPaths]
+      } finally {
+        objectInputStream.close()
+      }
+
+    cached match {
+      case Some(dependencyPaths) =>
+        val depFiles = dependencyPaths.map(path => new File(path))
+        if (depFiles.forall(file => file.exists())) {
+          logger.debug("cached jar: use that")
+          return Right(depFiles)
         }
-      case Left(err) =>
-        logger.warn("failed to decode cache file; it will resolve the dependencies; " + err)
+        logger.warn("there are no jar files that are caching; it will resolve the dependencies")
         Left(Unit)
+      case None =>
+        logger.debug("cached jar: empty")
+        Right(Seq())
     }
   }
 }
