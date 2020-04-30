@@ -28,6 +28,7 @@ class IvyDependencyResolver(private val logger: Logger) extends DependencyResolv
       org: String,
       name: String,
       rev: String,
+      withTransitives: Boolean,
       dynamicDependencyWorkingDir: File
   ): Either[RuntimeException, Seq[File]] = {
     IvyDependencyResolution(

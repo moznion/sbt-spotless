@@ -23,7 +23,6 @@ import java.io.{
   ObjectInputStream,
   ObjectOutputStream
 }
-import java.nio.charset.{Charset, StandardCharsets}
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 import java.util.Base64
 
@@ -33,11 +32,11 @@ import net.moznion.sbt.spotless.config.{SpotlessConfig, SpotlessPathConfig}
 import scala.util.matching.Regex
 
 private object DynamicDependencyResolver {
-  private val charEncoding: Charset = StandardCharsets.UTF_8
   private val mavenCoordinateRegex: Regex = "^(.+):(.+):(.+)$".r
 
   private def mavenCoordToModuleIDLeaves(mavenCoord: String): (String, String, String) = {
     val m = mavenCoordinateRegex.findAllIn(mavenCoord)
+    m.hasNext
     (m.group(1), m.group(2), m.group(3))
   }
 }
@@ -53,7 +52,7 @@ private class DynamicDependencyResolver(
   Files.createDirectories(pathConfig.dynamicDependencyWorkingDir.toPath)
   Files.createDirectories(pathConfig.dynamicDependencyCacheDir.toPath)
 
-  private[sbt] def resolve(mavenCoord: String): Seq[File] = {
+  private[sbt] def resolve(withTransitives: Boolean, mavenCoord: String): Seq[File] = {
     cache.get(mavenCoord) match {
       case Some(cached: Option[Seq[File]]) =>
         logger.debug("hit in-memory cache")
@@ -76,7 +75,8 @@ private class DynamicDependencyResolver(
           logger.debug(s"no cache. retrieving module ID: $org:$name:$rev")
 
           val retrieved =
-            dependencyResolver.retrieve(org, name, rev, pathConfig.dynamicDependencyWorkingDir)
+            dependencyResolver
+              .retrieve(org, name, rev, withTransitives, pathConfig.dynamicDependencyWorkingDir)
           val resolved: Option[Seq[File]] = retrieved match {
             case Right(retrieveFiles) => Option(retrieveFiles)
             case Left(err) =>

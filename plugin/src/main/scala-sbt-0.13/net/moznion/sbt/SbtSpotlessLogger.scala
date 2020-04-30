@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless
+package net.moznion.sbt
 
-import java.io.File
+import net.moznion.sbt.spotless.Logger
 
-trait DependencyResolver {
-  def retrieve(
-      org: String,
-      name: String,
-      rev: String,
-      withTransitives: Boolean,
-      dynamicDependencyWorkingDir: File
-  ): Either[RuntimeException, Seq[File]]
+class SbtSpotlessLogger(l: sbt.Logger) extends Logger {
+  override def debug(message: => String): Unit = l.debug(message)
+
+  override def info(message: => String): Unit = l.info(message)
+
+  override def warn(message: => String): Unit = l.warn(message)
+
+  override def error(message: => String): Unit = l.error(message)
 }

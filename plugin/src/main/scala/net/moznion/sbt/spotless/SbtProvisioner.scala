@@ -49,7 +49,7 @@ private[sbt] object SbtProvisioner {
         } else {
           mavenCoordinates.asScala.flatMap(mavenCoord => {
             logger.debug("given maven-coord: " + mavenCoord)
-            dynamicDependencyResolver.resolve(mavenCoord)
+            dynamicDependencyResolver.resolve(withTransitives, mavenCoord)
           })
         }
         (staticDeps ++ dynamicDeps).toSet.asJava
