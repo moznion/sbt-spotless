@@ -45,7 +45,7 @@ case class CppConfig(
     override val enabled: Boolean = true,
     eclipseCpp: EclipseCppConfig = null,
     licenseHeader: CppLicenseStringHeaderConfig = null,
-    licenseHeaderFile: CppLicenseFileHeaderConfig = null,
+    licenseHeaderFile: CppLicenseFileHeaderConfig = null
 ) extends FormatterConfig(
       paddedCell,
       lineEndings,
@@ -53,5 +53,5 @@ case class CppConfig(
       exceptionPolicy,
       target,
       targetExclude,
-      enabled,
+      enabled
     ) {}

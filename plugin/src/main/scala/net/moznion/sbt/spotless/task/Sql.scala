@@ -21,15 +21,14 @@ import java.io.File
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.sql.DBeaverSQLFormatterStep
 import net.moznion.sbt.spotless.config.{SpotlessPathConfig, SqlConfig}
-import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
-import sbt.util.Logger
+import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode}
 
 import _root_.scala.collection.JavaConverters._
 
 private[sbt] case class Sql[T <: SqlConfig](
     private val config: T,
     private val pathConfig: SpotlessPathConfig,
-    private val logger: Logger,
+    private val logger: Logger
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {

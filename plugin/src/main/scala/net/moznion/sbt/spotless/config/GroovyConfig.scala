@@ -50,7 +50,7 @@ case class GroovyConfig(
     importOrderFile: File = null,
     grEclipse: GrEclipseConfig = null,
     licenseHeader: JavaLicenseStringHeaderConfig = null,
-    licenseHeaderFile: JavaLicenseFileHeaderConfig = null,
+    licenseHeaderFile: JavaLicenseFileHeaderConfig = null
 ) extends FormatterConfig(
       paddedCell,
       lineEndings,
@@ -58,5 +58,5 @@ case class GroovyConfig(
       exceptionPolicy,
       target,
       targetExclude,
-      enabled,
+      enabled
     ) {}

@@ -16,4 +16,6 @@
 
 package net.moznion.sbt.spotless
 
-private[spotless] case class DependencyCache(dependencyPaths: Option[Seq[String]]) {}
+private[spotless] object DependencyCache {
+  type DependencyPaths = Option[Seq[String]]
+}

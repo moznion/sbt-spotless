@@ -26,5 +26,5 @@ import java.io.File
   */
 case class EclipseCppConfig(
     version: String = null,
-    configFiles: Seq[File] = null,
+    configFiles: Seq[File] = null
 ) {}

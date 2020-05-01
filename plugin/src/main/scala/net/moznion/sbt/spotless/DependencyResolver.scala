@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless.config
+package net.moznion.sbt.spotless
 
 import java.io.File
 
-/**
-  * A configuration for [[https://scalameta.org/scalafmt/ Scalafmt]].
-  *
-  * @param version The version of scalafmt to use.
-  * @param configFile A configuration file for scalafmt.
-  */
-case class ScalafmtConfig(
-    version: String = null,
-    configFile: File = null
-) {}
+trait DependencyResolver {
+  def retrieve(
+      org: String,
+      name: String,
+      rev: String,
+      withTransitives: Boolean,
+      dynamicDependencyWorkingDir: File
+  ): Either[RuntimeException, Seq[File]]
+}

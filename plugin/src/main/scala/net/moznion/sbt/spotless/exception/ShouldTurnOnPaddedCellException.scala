@@ -23,7 +23,7 @@ object ShouldTurnOnPaddedCellException {
       taskName: String,
       configClassName: String,
       paddedCellDescriptionURL: String,
-      pathConfig: SpotlessPathConfig,
+      pathConfig: SpotlessPathConfig
   ): String =
     s"""|You have a misbehaving rule which can't make up its mind.
        |This means that spotlessCheck will fail even after spotlessApply has run.
@@ -48,8 +48,8 @@ case class ShouldTurnOnPaddedCellException(
     private val taskName: String,
     private val configClassName: String,
     private val paddedCellDescriptionURL: String,
-    private val pathConfig: SpotlessPathConfig,
+    private val pathConfig: SpotlessPathConfig
 ) extends FormatException(
       ShouldTurnOnPaddedCellException
-        .message(taskName, configClassName, paddedCellDescriptionURL, pathConfig),
+        .message(taskName, configClassName, paddedCellDescriptionURL, pathConfig)
     ) {}

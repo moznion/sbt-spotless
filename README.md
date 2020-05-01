@@ -12,6 +12,13 @@ in your `plugins.sbt`:
 addSbtPlugin("net.moznion.sbt" % "sbt-spotless" % "0.0.1")
 ```
 
+### Supported sbt versions
+
+- sbt 1.3
+- sbt 0.13
+
+This plugin supports the legacy sbt 0.13, but the legacy one has some issue on dynamic dependency resolution (see also [known issue](#known-issues)) and there might be some unexpected behavior potentially. Also an author doesn't motivate to maintenance the "legacy sbt" in the future continuously/positively, so there will a possibility to give up the support without notice. So I highly recommend considering to upgrade the sbt to 1.3.
+
 ## Usage
 
 ### Check the code format
@@ -51,7 +58,7 @@ Basically, Spotless runner resolves the dynamic dependencies every time, that is
 
 ## Known issues
 
-### Some formatter cannot resolve the dynamic dependency
+### (sbt 1.3) Some formatter cannot resolve the dynamic dependency
 
 On some formatter, this plugin (i.e. Ivy2) cannot resolve dependencies of the formatter dynamically so it needs to declare the dependencies explicitly in your `build.sbt`.
 
@@ -71,6 +78,20 @@ libraryDependencies ++= List(
   "org.eclipse.platform" % "org.eclipse.equinox.app" % "1.3.600", // FIXME workaround for dependency resolution
   "com.diffplug.spotless" % "spotless-eclipse-cdt" % "9.9.0", // FIXME workaround for dependency resolution
 ),
+```
+
+### (sbt 0.13) Java formatter cannot resolve guava dynamic dependency
+
+If a Java Spotless task raises an exception like the following,
+
+```
+Caused by: java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument(ZLjava/lang/String;II)V
+```
+
+Somehow, legacy sbt cannot resolve the dependency on guava. So please add a library dependency definition explicitly in your `build.sbt`, like so:
+
+```scala
+libraryDependencies += "com.google.guava" % "guava" % "29.0-jre"
 ```
 
 ## For developers

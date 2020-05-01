@@ -21,7 +21,6 @@ import java.util
 
 import com.diffplug.spotless.Provisioner
 import net.moznion.sbt.spotless.config.{SpotlessConfig, SpotlessPathConfig}
-import sbt.util.Logger
 
 import _root_.scala.collection.JavaConverters._
 
@@ -35,20 +34,26 @@ private[sbt] object SbtProvisioner {
       spotlessConfig: SpotlessConfig,
       pathConfig: SpotlessPathConfig,
       staticDeps: Seq[File],
-      logger: Logger,
-  ): Provisioner = { (withTransitives: Boolean, mavenCoords: util.Collection[String]) =>
-    {
-      val dynamicDependencyResolver =
-        new DynamicDependencyResolver(spotlessConfig, pathConfig, logger)
-      val dynamicDeps: Iterable[File] = if (spotlessConfig.disableDynamicDependencyResolving) {
-        Seq()
-      } else {
-        mavenCoords.asScala.flatMap(mavenCoord => {
-          logger.debug("given maven-coord: " + mavenCoord)
-          dynamicDependencyResolver.resolve(mavenCoord)
-        })
+      dependencyResolver: DependencyResolver,
+      logger: Logger
+  ): Provisioner = {
+    new Provisioner {
+      override def provisionWithTransitives(
+          withTransitives: Boolean,
+          mavenCoordinates: util.Collection[String]
+      ): util.Set[File] = {
+        val dynamicDependencyResolver =
+          new DynamicDependencyResolver(spotlessConfig, pathConfig, dependencyResolver, logger)
+        val dynamicDeps: Iterable[File] = if (spotlessConfig.disableDynamicDependencyResolving) {
+          Seq()
+        } else {
+          mavenCoordinates.asScala.flatMap(mavenCoord => {
+            logger.debug("given maven-coord: " + mavenCoord)
+            dynamicDependencyResolver.resolve(withTransitives, mavenCoord)
+          })
+        }
+        (staticDeps ++ dynamicDeps).toSet.asJava
       }
-      (staticDeps ++ dynamicDeps).toSet.asJava
     }
   }
 }

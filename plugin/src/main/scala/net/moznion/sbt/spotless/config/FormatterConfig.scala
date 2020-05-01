@@ -39,5 +39,5 @@ abstract class FormatterConfig(
     val exceptionPolicy: FormatExceptionPolicy,
     val target: Seq[Target],
     val targetExclude: Seq[Target],
-    val enabled: Boolean,
+    val enabled: Boolean
 ) {}

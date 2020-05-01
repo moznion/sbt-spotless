@@ -58,7 +58,7 @@ case class JavaConfig(
     googleJavaFormat: GoogleJavaFormatConfig = null,
     eclipseJava: EclipseJavaConfig = null,
     licenseHeader: JavaLicenseStringHeaderConfig = null,
-    licenseHeaderFile: JavaLicenseFileHeaderConfig = null,
+    licenseHeaderFile: JavaLicenseFileHeaderConfig = null
 ) extends FormatterConfig(
       paddedCell,
       lineEndings,
@@ -66,7 +66,7 @@ case class JavaConfig(
       exceptionPolicy,
       target,
       targetExclude,
-      enabled,
+      enabled
     )
     with ExtensionsSupplier {
   private[sbt] override def getExtensions: Seq[String] = {

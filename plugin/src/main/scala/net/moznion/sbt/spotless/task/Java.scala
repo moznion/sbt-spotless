@@ -23,8 +23,7 @@ import com.diffplug.spotless.extra.java.EclipseJdtFormatterStep
 import com.diffplug.spotless.generic.LicenseHeaderStep
 import com.diffplug.spotless.java.{GoogleJavaFormatStep, ImportOrderStep, RemoveUnusedImportsStep}
 import net.moznion.sbt.spotless.config.{JavaConfig, SpotlessPathConfig}
-import net.moznion.sbt.spotless.{FormatterSteps, RunningMode}
-import sbt.util.Logger
+import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode}
 
 import _root_.scala.collection.JavaConverters._
 
@@ -32,7 +31,7 @@ private[sbt] case class Java[T <: JavaConfig](
     private val javaFiles: Seq[File],
     private val config: T,
     private val pathConfig: SpotlessPathConfig,
-    private val logger: Logger,
+    private val logger: Logger
 ) extends RunnableTask[T] {
   def run(provisioner: Provisioner, mode: RunningMode): Unit = {
     if (!config.enabled) {
@@ -87,7 +86,7 @@ private[sbt] case class Java[T <: JavaConfig](
 
     steps = steps.filterByName(
       LicenseHeaderStep.name(),
-      LicenseHeaderStep.unsupportedJvmFilesFilter(),
+      LicenseHeaderStep.unsupportedJvmFilesFilter()
     )
 
     if (mode.applyFormat) {

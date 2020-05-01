@@ -26,5 +26,5 @@ import java.io.File
   */
 case class EclipseJavaConfig(
     version: String = null,
-    configFiles: Seq[File] = null,
+    configFiles: Seq[File] = null
 ) {}

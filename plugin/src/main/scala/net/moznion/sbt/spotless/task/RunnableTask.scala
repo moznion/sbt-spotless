@@ -21,12 +21,11 @@ import java.nio.charset.Charset
 import java.nio.file.{Files, Path, StandardOpenOption}
 
 import com.diffplug.spotless.extra.integration.DiffMessageFormatter
-import com.diffplug.spotless.{Formatter, LineEnding, PaddedCell, PaddedCellBulk, Provisioner}
+import com.diffplug.spotless._
 import net.moznion.sbt.spotless.Target.{IsFile, IsString}
 import net.moznion.sbt.spotless.config.{FormatterConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.exception.{ShouldTurnOnPaddedCellException, ViolatedFormatException}
-import net.moznion.sbt.spotless.{FormatterSteps, RunningMode, Target}
-import sbt.util.Logger
+import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode, Target}
 
 import _root_.scala.collection.JavaConverters._
 
@@ -54,7 +53,7 @@ trait RunnableTask[T <: FormatterConfig] {
       steps: FormatterSteps,
       pathConfig: SpotlessPathConfig,
       config: T,
-      logger: Logger,
+      logger: Logger
   ): Unit = {
     val target = getTarget.filterNot(Option(config.targetExclude).toSet)
 
@@ -73,7 +72,7 @@ trait RunnableTask[T <: FormatterConfig] {
             getName,
             getClassName,
             paddedCellDescriptionURL,
-            pathConfig,
+            pathConfig
           )
         }
         throw ViolatedFormatException(
@@ -83,7 +82,7 @@ trait RunnableTask[T <: FormatterConfig] {
             .formatter(formatter)
             .problemFiles(problemFiles.asJava)
             .isPaddedCell(config.paddedCell)
-            .getMessage,
+            .getMessage
         )
       }
     } finally {
@@ -95,7 +94,7 @@ trait RunnableTask[T <: FormatterConfig] {
       formatter: Formatter,
       problemFiles: Seq[File],
       pathConfig: SpotlessPathConfig,
-      logger: Logger,
+      logger: Logger
   ): Unit = {
     if (problemFiles.isEmpty) {
       logger.info(s"""|$getName is in `paddedCell` mode, but it doesn't need to be.
@@ -107,7 +106,7 @@ trait RunnableTask[T <: FormatterConfig] {
       pathConfig.paddedCellWorkingDir,
       pathConfig.paddedCellDiagnoseDir,
       formatter,
-      problemFiles.asJava,
+      problemFiles.asJava
     )
     if (!stillFailingFiles.isEmpty) {
       throw ViolatedFormatException(
@@ -117,7 +116,7 @@ trait RunnableTask[T <: FormatterConfig] {
           .formatter(formatter)
           .problemFiles(problemFiles.asJava)
           .isPaddedCell(true)
-          .getMessage,
+          .getMessage
       )
     }
   }
@@ -129,7 +128,7 @@ trait RunnableTask[T <: FormatterConfig] {
       steps: FormatterSteps,
       pathConfig: SpotlessPathConfig,
       config: T,
-      logger: Logger,
+      logger: Logger
   ): Seq[File] = {
     val target = getTarget.filterNot(Option(config.targetExclude).toSet)
 
@@ -163,7 +162,7 @@ trait RunnableTask[T <: FormatterConfig] {
               Files.write(
                 file.toPath,
                 result.getBytes(formatter.getEncoding),
-                StandardOpenOption.TRUNCATE_EXISTING,
+                StandardOpenOption.TRUNCATE_EXISTING
               )
             } else {
               anyMisbehave = true
@@ -176,7 +175,7 @@ trait RunnableTask[T <: FormatterConfig] {
           getName,
           getClassName,
           paddedCellDescriptionURL,
-          pathConfig,
+          pathConfig
         )
       }
 
@@ -190,8 +189,12 @@ trait RunnableTask[T <: FormatterConfig] {
       target: Seq[File],
       steps: FormatterSteps,
       baseDir: Path,
-      config: T,
+      config: T
   ): Formatter = {
+    val supplier = new _root_.java.util.function.Supplier[_root_.java.lang.Iterable[File]] {
+      override def get(): _root_.java.lang.Iterable[File] = target.asJava
+    }
+
     Formatter
       .builder()
       .rootDir(baseDir)
@@ -199,7 +202,7 @@ trait RunnableTask[T <: FormatterConfig] {
       .lineEndingsPolicy(
         Option(config.lineEndings)
           .map(l => l.createPolicy())
-          .getOrElse(LineEnding.UNIX.createPolicy(baseDir.toFile, () => target.asJava)),
+          .getOrElse(LineEnding.UNIX.createPolicy(baseDir.toFile, supplier))
       )
       .encoding(Option(config.encoding).getOrElse(Charset.defaultCharset()))
       .exceptionPolicy(config.exceptionPolicy)

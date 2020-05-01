@@ -42,11 +42,11 @@ case class SpotlessConfig(
     disableDynamicDependencyCache: Boolean = false,
     disableDynamicDependencyResolving: Boolean = false,
     paddedCellWorkingDir: Target = null,
-    paddedCellDiagnoseDir: Target = null,
+    paddedCellDiagnoseDir: Target = null
 ) {
   private[sbt] def toPathConfig(
       defaultBaseDir: File,
-      defaultTargetDirectory: File,
+      defaultTargetDirectory: File
   ): SpotlessPathConfig = {
     val defaultBaseDirTarget: Target = defaultBaseDir
     val baseDir: File = Option(this.baseDir).getOrElse(defaultBaseDirTarget) match {
@@ -89,7 +89,7 @@ case class SpotlessConfig(
       dynamicDependencyWorkingDir = dynamicDependencyWorkingDir,
       dynamicDependencyCacheDir = dynamicDependencyCacheDir,
       paddedCellWorkingDir = paddedCellWorkingDir,
-      paddedCellDiagnoseDir = paddedCellDiagnoseDir,
+      paddedCellDiagnoseDir = paddedCellDiagnoseDir
     )
   }
 }

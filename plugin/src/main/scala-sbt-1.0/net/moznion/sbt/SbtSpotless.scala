@@ -59,8 +59,8 @@ object SbtSpotless extends AutoPlugin {
       spotlessCheck := supplySpotlessTaskInitiator(RunningMode(check = true), "spotlessCheck").value,
       spotlessApply := supplySpotlessTaskInitiator(
         RunningMode(check = true, applyFormat = true),
-        "spotlessApply",
-      ).value,
+        "spotlessApply"
+      ).value
     )
 
   override def globalSettings: Seq[Def.Setting[_]] = Seq(
@@ -70,7 +70,7 @@ object SbtSpotless extends AutoPlugin {
     spotlessCpp := CppConfig(enabled = false),
     spotlessGroovy := GroovyConfig(enabled = false),
     spotlessKotlin := KotlinConfig(enabled = false),
-    spotlessSql := SqlConfig(enabled = false),
+    spotlessSql := SqlConfig(enabled = false)
   )
 
   private val supplySpotlessTaskInitiator: (RunningMode, String) => Def.Initialize[Task[Unit]] = {
@@ -80,11 +80,18 @@ object SbtSpotless extends AutoPlugin {
         val config: SpotlessConfig = spotless.value
         val pathConfig: SpotlessPathConfig = config.toPathConfig(defaultBaseDir, target.value)
 
-        val logger: Logger = streams.value.log
+        val sbtLogger: sbt.util.Logger = streams.value.log
+        val logger: net.moznion.sbt.spotless.Logger = new SbtSpotlessLogger(sbtLogger)
         val staticDeps: Seq[File] =
           (dependencyClasspathAsJars in Compile).value.map(dep => dep.data)
         val provisioner: Provisioner =
-          SbtProvisioner.supplyProvisioner(config, pathConfig, staticDeps, logger)
+          SbtProvisioner.supplyProvisioner(
+            config,
+            pathConfig,
+            staticDeps,
+            new IvyDependencyResolver(sbtLogger),
+            logger
+          )
 
         lazy val classPathFiles: Seq[File] =
           (sources in Compile).value.toList ++ (sources in Test).value.toList
@@ -135,13 +142,13 @@ object SbtSpotless extends AutoPlugin {
               case e: FormatException =>
                 logger.error(e.getMessage)
                 false
-            },
+            }
           )
           .reduce((acc, taskResult) => acc && taskResult)
 
         if (!succeeded) {
           throw new MessageOnlyException(
-            s"Failed to run $taskName, please refer to the above logs.",
+            s"Failed to run $taskName, please refer to the above logs."
           )
         }
       }

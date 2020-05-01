@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless.config
+package net.moznion.sbt.spotless
 
-import java.io.File
-
-/**
-  * A configuration for [[https://scalameta.org/scalafmt/ Scalafmt]].
-  *
-  * @param version The version of scalafmt to use.
-  * @param configFile A configuration file for scalafmt.
-  */
-case class ScalafmtConfig(
-    version: String = null,
-    configFile: File = null
-) {}
+trait Logger {
+  def debug(message: => String): Unit
+  def info(message: => String): Unit
+  def warn(message: => String): Unit
+  def error(message: => String): Unit
+}

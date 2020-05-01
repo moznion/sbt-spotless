@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package net.moznion.sbt.spotless.config
+package net.moznion.sbt
 
-import java.io.File
+import net.moznion.sbt.spotless.Logger
 
-/**
-  * A configuration for [[https://scalameta.org/scalafmt/ Scalafmt]].
-  *
-  * @param version The version of scalafmt to use.
-  * @param configFile A configuration file for scalafmt.
-  */
-case class ScalafmtConfig(
-    version: String = null,
-    configFile: File = null
-) {}
+class SbtSpotlessLogger(l: sbt.Logger) extends Logger {
+  override def debug(message: => String): Unit = l.debug(message)
+
+  override def info(message: => String): Unit = l.info(message)
+
+  override def warn(message: => String): Unit = l.warn(message)
+
+  override def error(message: => String): Unit = l.error(message)
+}
