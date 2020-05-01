@@ -11,6 +11,8 @@ def getVersionSpecificScalacOptions(scalaVersion: String): Seq[String] = {
   }
 }
 
+lazy val sbtSpotless = project.in(file(".")).aggregate(plugin).settings(skip in publish := true)
+
 lazy val plugin = project
   .withId("sbt-spotless")
   .in(file("plugin"))
@@ -70,7 +72,7 @@ lazy val plugin = project
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
-      releaseStepCommandAndRemaining("publishSigned"),
+      releaseStepCommandAndRemaining("+publishSigned"),
       releaseStepCommand("sonatypeBundleRelease"),
       setNextVersion,
       commitNextVersion,
