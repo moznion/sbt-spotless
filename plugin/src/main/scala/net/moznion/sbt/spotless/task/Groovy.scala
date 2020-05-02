@@ -23,6 +23,7 @@ import com.diffplug.spotless.extra.groovy.GrEclipseFormatterStep
 import com.diffplug.spotless.generic.LicenseHeaderStep
 import com.diffplug.spotless.java.ImportOrderStep
 import net.moznion.sbt.spotless.config.{GroovyConfig, SpotlessPathConfig}
+import net.moznion.sbt.spotless.util.GlobResolver
 import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode}
 
 import _root_.scala.collection.JavaConverters._
@@ -85,11 +86,7 @@ private[sbt] case class Groovy[T <: GroovyConfig](
 
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
-      return better.files
-        .File(pathConfig.baseDir.toPath)
-        .glob("**/*.groovy")
-        .map(found => found.toJava)
-        .toSeq
+      GlobResolver.resolve(pathConfig.baseDir, "**/*.groovy")
     }
 
     resolveTarget(config.target, pathConfig.baseDir)

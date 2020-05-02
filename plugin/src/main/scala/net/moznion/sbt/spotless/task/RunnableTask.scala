@@ -20,9 +20,8 @@ import java.io.File
 import java.nio.charset.Charset
 import java.nio.file.{Files, Path, StandardOpenOption}
 
-import com.diffplug.spotless.extra.integration.DiffMessageFormatter
 import com.diffplug.spotless._
-import net.moznion.sbt.spotless.Target.{IsFile, IsString}
+import com.diffplug.spotless.extra.integration.DiffMessageFormatter
 import net.moznion.sbt.spotless.config.{FormatterConfig, SpotlessPathConfig}
 import net.moznion.sbt.spotless.exception.{ShouldTurnOnPaddedCellException, ViolatedFormatException}
 import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode, Target}
@@ -38,11 +37,15 @@ trait RunnableTask[T <: FormatterConfig] {
   private[sbt] def run(provisioner: Provisioner, mode: RunningMode): Unit
 
   private[spotless] def resolveTarget(target: Seq[Target], baseDir: File): Seq[File] = {
-    target.flatMap {
-      case IsFile(file) => Seq(file)
-      case IsString(strPath) =>
-        better.files.File(baseDir.toPath).glob(strPath).map(found => found.toJava)
-    }
+    target.flatMap(_.toFiles(baseDir))
+  }
+
+  private def getFilteredTarget(pathConfig: SpotlessPathConfig, config: T): Seq[File] = {
+    val excludeFileSet: Set[File] = Option(config.targetExclude)
+      .map[Seq[File]](exTarget => resolveTarget(exTarget, pathConfig.baseDir))
+      .getOrElse(Seq())
+      .toSet
+    getTarget.filterNot(targetFile => excludeFileSet.contains(targetFile))
   }
 
   /**
@@ -55,11 +58,11 @@ trait RunnableTask[T <: FormatterConfig] {
       config: T,
       logger: Logger
   ): Unit = {
-    val target = getTarget.filterNot(Option(config.targetExclude).toSet)
+    val target = getFilteredTarget(pathConfig, config)
 
     val formatter = buildFormatter(target, steps, pathConfig.baseDir.toPath, config)
     try {
-      val problemFiles = getTarget.filter(file => !formatter.isClean(file))
+      val problemFiles = target.filter(file => !formatter.isClean(file))
 
       if (config.paddedCell) {
         checkWithPaddedCell(formatter, problemFiles, pathConfig, logger)
@@ -130,7 +133,7 @@ trait RunnableTask[T <: FormatterConfig] {
       config: T,
       logger: Logger
   ): Seq[File] = {
-    val target = getTarget.filterNot(Option(config.targetExclude).toSet)
+    val target = getFilteredTarget(pathConfig, config)
 
     val formatter = buildFormatter(target, steps, pathConfig.baseDir.toPath, config)
     try {

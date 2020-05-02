@@ -21,6 +21,7 @@ import java.io.File
 import com.diffplug.spotless.Provisioner
 import com.diffplug.spotless.kotlin.KtLintStep
 import net.moznion.sbt.spotless.config.{KotlinConfig, SpotlessPathConfig}
+import net.moznion.sbt.spotless.util.GlobResolver
 import net.moznion.sbt.spotless.{FormatterSteps, Logger, RunningMode}
 
 import _root_.scala.collection.JavaConverters._
@@ -67,7 +68,7 @@ private[sbt] case class Kotlin[T <: KotlinConfig](
   override private[spotless] def getTarget: Seq[File] = {
     if (config.target == null || config.target.isEmpty) {
       return List("kt", "ktm", "kts").flatMap(ext =>
-        better.files.File(pathConfig.baseDir.toPath).glob("**/*." + ext).map(found => found.toJava)
+        GlobResolver.resolve(pathConfig.baseDir, s"**/*.$ext")
       )
     }
 

@@ -17,7 +17,6 @@
 package net.moznion.sbt.spotless
 
 import java.io.File
-import java.util
 
 import com.diffplug.spotless.Provisioner
 import net.moznion.sbt.spotless.config.{SpotlessConfig, SpotlessPathConfig}
@@ -40,8 +39,8 @@ private[sbt] object SbtProvisioner {
     new Provisioner {
       override def provisionWithTransitives(
           withTransitives: Boolean,
-          mavenCoordinates: util.Collection[String]
-      ): util.Set[File] = {
+          mavenCoordinates: java.util.Collection[String]
+      ): java.util.Set[File] = {
         val dynamicDependencyResolver =
           new DynamicDependencyResolver(spotlessConfig, pathConfig, dependencyResolver, logger)
         val dynamicDeps: Iterable[File] = if (spotlessConfig.disableDynamicDependencyResolving) {

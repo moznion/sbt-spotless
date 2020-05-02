@@ -18,9 +18,19 @@ package net.moznion.sbt.spotless
 
 import java.io.File
 
+import net.moznion.sbt.spotless.Target.{IsFile, IsString}
+import net.moznion.sbt.spotless.util.GlobResolver
+
 import scala.language.implicitConversions
 
-sealed trait Target
+sealed trait Target {
+  def toFiles(baseDir: File): Seq[File] = {
+    this match {
+      case IsFile(file)      => Seq(file)
+      case IsString(strPath) => GlobResolver.resolve(baseDir, strPath)
+    }
+  }
+}
 
 /**
   * A specifier for location of a file.
