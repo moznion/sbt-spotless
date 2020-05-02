@@ -99,17 +99,17 @@ libraryDependencies += "com.google.guava" % "guava" % "29.0-jre"
 ### How to run tests
 
 ```
-SPOTLESS_SBT_TEST_DEPDIR=$(pwd)/.dyn_dep_for_dev sbt clean scripted
+sbt clean scripted
 ```
 
-`SPOTLESS_SBT_TEST_DEPDIR` is an environment variable to specify a directory for dynamic dependency cache.
+This scripted test caches the result of resolved dynamic dependency.
 
-If you would like to clear cache, please remove the contents that is in the directory.
+If you would like to clear the cache, please remove the contents that are in a directory: `plugin/target/.dyn-dep-test/`.
 
 ### How to release this plugin to maven central
 
 ```
-SPOTLESS_SBT_TEST_DEPDIR=$(pwd)/.dyn_dep_for_dev sbt release
+sbt release
 ```
 
 ### How to try this plugin on local

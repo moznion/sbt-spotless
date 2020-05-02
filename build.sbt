@@ -1,5 +1,7 @@
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
+lazy val sbtSpotless = project.in(file(".")).aggregate(plugin).settings(skip in publish := true)
+
 def getVersionSpecificScalacOptions(scalaVersion: String): Seq[String] = {
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMinor)) if scalaMinor == 12 =>
@@ -11,7 +13,8 @@ def getVersionSpecificScalacOptions(scalaVersion: String): Seq[String] = {
   }
 }
 
-lazy val sbtSpotless = project.in(file(".")).aggregate(plugin).settings(skip in publish := true)
+lazy val bootstrapScripted = taskKey[Unit]("Bootstrap for the scripted test")
+lazy val scriptedTestDepDir = settingKey[String]("Returns the dependency directory for scripted test")
 
 lazy val plugin = project
   .withId("sbt-spotless")
@@ -47,11 +50,6 @@ lazy val plugin = project
       "-Xlint"
     ) ++ getVersionSpecificScalacOptions(scalaVersion.value)),
     javacOptions ++= Seq("-encoding", "UTF-8"),
-    scriptedLaunchOpts := {
-      scriptedLaunchOpts.value ++
-        Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
-    },
-    scriptedBufferLog := false,
     scalafmtOnCompile := true,
     libraryDependencies ++= Dependencies.sbtSpotless(scalaVersion.value),
     publishMavenStyle := true,
@@ -63,6 +61,24 @@ lazy val plugin = project
         case "2.12" => "1.2.0"
       }
     },
+    scriptedTestDepDir := {
+      s"${target.value}/.dyn-dep-test"
+    },
+    bootstrapScripted := {
+      new File(scriptedTestDepDir.value).mkdir()
+    },
+    scripted := scripted
+      .dependsOn(bootstrapScripted)
+      .evaluated,
+    scriptedLaunchOpts := {
+      scriptedLaunchOpts.value ++
+        Seq(
+          "-Xmx1024M",
+          s"-Dplugin.version=${version.value}",
+          s"-Dplugin.scriptedTestDepDir=${scriptedTestDepDir.value}"
+        )
+    },
+    scriptedBufferLog := false
   )
 
 releaseProcess := Seq[ReleaseStep](
