@@ -104,7 +104,7 @@ sbt clean scripted
 
 This scripted test caches the result of resolved dynamic dependency.
 
-If you would like to clear the cache, please remove the contents that are in a directory: `plugin/target/.dyn-dep-test/`.
+If you would like to clear the cache, please remove the contents that are in a directory: `plugin/target/.dyn-dep-test/`. FYI, `sbt clean` also clears the cache.
 
 ### How to release this plugin to maven central
 
