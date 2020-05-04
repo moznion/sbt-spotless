@@ -80,19 +80,11 @@ libraryDependencies ++= List(
 ),
 ```
 
-### (sbt 0.13) Java formatter cannot resolve guava dynamic dependency
+### (sbt 0.13) Some formatter cannot resolve the dynamic dependency
 
-If a Java Spotless task raises an exception like the following,
+In sbt 0.13, highly recommend disabling dynamic dependency resolution by setting [disableDynamicDependencyResolving](https://github.com/moznion/sbt-spotless/wiki/Plugin-Configuration#disabledynamicdependencyresolving-boolean) `true` and specify the required dependencies explicitly in your `build.sbt`.
 
-```
-Caused by: java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument(ZLjava/lang/String;II)V
-```
-
-Somehow, legacy sbt cannot resolve the dependency on guava. So please add a library dependency definition explicitly in your `build.sbt`, like so:
-
-```scala
-libraryDependencies += "com.google.guava" % "guava" % "29.0-jre"
-```
+For example, in case of Java, let's specify like `"com.google.googlejavaformat" % "google-java-format" % "1.7"`, and in case of Scala, please specify `"org.scalameta" %% "scalafmt-core" % "2.0.1"`.
 
 ## For developers
 
