@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "labels": ["auto-dep"],
+  "enabledManagers": ["sbt"],
+  "vulnerabilityAlerts": {
+    "labels": ["security"]
+  }
+}
+
