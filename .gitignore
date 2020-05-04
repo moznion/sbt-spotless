@@ -12,5 +12,3 @@ project/plugins/project/
 *.log
 *.metals
 
-.dyn_dep_for_dev/*
-!.dyn_dep_for_dev/.gitkeep
