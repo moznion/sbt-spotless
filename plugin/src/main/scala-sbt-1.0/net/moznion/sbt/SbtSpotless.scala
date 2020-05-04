@@ -60,7 +60,17 @@ object SbtSpotless extends AutoPlugin {
       spotlessApply := supplySpotlessTaskInitiator(
         RunningMode(check = true, applyFormat = true),
         "spotlessApply"
-      ).value
+      ).value,
+      (compile in Compile) := Def.taskDyn {
+        val compileTask = if (spotless.value.applyOnCompile) {
+          (compile in Compile).dependsOn(spotlessApply).taskValue
+        } else if (spotless.value.checkOnCompile) {
+          (compile in Compile).dependsOn(spotlessCheck).taskValue
+        } else {
+          (compile in Compile).taskValue
+        }
+        Def.task(compileTask.value)
+      }.value
     )
 
   override def globalSettings: Seq[Def.Setting[_]] = Seq(

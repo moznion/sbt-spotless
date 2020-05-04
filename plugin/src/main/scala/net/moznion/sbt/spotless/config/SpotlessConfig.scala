@@ -42,7 +42,9 @@ case class SpotlessConfig(
     disableDynamicDependencyCache: Boolean = false,
     disableDynamicDependencyResolving: Boolean = false,
     paddedCellWorkingDir: Target = null,
-    paddedCellDiagnoseDir: Target = null
+    paddedCellDiagnoseDir: Target = null,
+    checkOnCompile: Boolean = false,
+    applyOnCompile: Boolean = false
 ) {
   private[sbt] def toPathConfig(
       defaultBaseDir: File,
