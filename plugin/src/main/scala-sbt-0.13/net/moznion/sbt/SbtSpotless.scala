@@ -152,7 +152,9 @@ object SbtSpotless extends AutoPlugin {
               s"Failed to run $taskName, please refer to the above logs."
             )
           }
-          logger.info(s"Some violations occur on $taskName, please refer to the above logs. `noFailOnViolated` is set true, so the task doesn't fail.")
+          logger.warn(
+            s"It detects some format violations in $taskName, please refer to the above logs. Anyway, `noFailOnViolated` is set true, this task doesn't fail."
+          )
         }
       }
   }
