@@ -44,7 +44,8 @@ case class SpotlessConfig(
     paddedCellWorkingDir: Target = null,
     paddedCellDiagnoseDir: Target = null,
     checkOnCompile: Boolean = false,
-    applyOnCompile: Boolean = false
+    applyOnCompile: Boolean = false,
+    noFailOnViolated: Boolean = false
 ) {
   private[sbt] def toPathConfig(
       defaultBaseDir: File,

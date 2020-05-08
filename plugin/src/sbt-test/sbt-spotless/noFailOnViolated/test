@@ -1,0 +1,5 @@
+$ copy-file ./fixtures/InvalidIndentMain.java ./src/main/java/Main.java
+$ copy-file ./fixtures/InvalidIndentTest.java ./src/test/java/Test.java
+
+# should not fail because of `noFailOnViolated`
+> spotlessCheck

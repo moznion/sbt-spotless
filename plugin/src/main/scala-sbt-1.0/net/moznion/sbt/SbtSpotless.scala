@@ -157,8 +157,13 @@ object SbtSpotless extends AutoPlugin {
           .reduce((acc, taskResult) => acc && taskResult)
 
         if (!succeeded) {
-          throw new MessageOnlyException(
-            s"Failed to run $taskName, please refer to the above logs."
+          if (!config.noFailOnViolated) {
+            throw new MessageOnlyException(
+              s"Failed to run $taskName, please refer to the above logs."
+            )
+          }
+          logger.info(
+            s"Some violations occur on $taskName, please refer to the above logs. `noFailOnViolated` is set true, so the task doesn't fail."
           )
         }
       }
