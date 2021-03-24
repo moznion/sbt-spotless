@@ -14,6 +14,6 @@ lazy val root = (project in file("."))
     ),
     libraryDependencies ++= List(
       "org.eclipse.platform" % "org.eclipse.equinox.app" % "1.3.600", // FIXME workaround for dependency resolution
-      "com.diffplug.spotless" % "spotless-eclipse-cdt" % "9.9.0", // FIXME workaround for dependency resolution
+      "com.diffplug.spotless" % "spotless-eclipse-cdt" % "9.11.0", // FIXME workaround for dependency resolution
     ),
   )
