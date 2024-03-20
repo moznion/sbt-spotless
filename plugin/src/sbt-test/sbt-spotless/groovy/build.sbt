@@ -15,7 +15,7 @@ lazy val root = (project in file("."))
       ),
     ),
     libraryDependencies ++= List(
-      "org.eclipse.platform" % "org.eclipse.equinox.app" % "1.3.600", // FIXME workaround for dynamic dependency resolution
+      "org.eclipse.platform" % "org.eclipse.equinox.app" % "1.7.0", // FIXME workaround for dynamic dependency resolution
       "com.diffplug.spotless" % "spotless-eclipse-groovy" % "3.5.0", // FIXME workaround for dynamic dependency resolution
     ),
   )
