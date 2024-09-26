@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  private lazy val spotlessVersion = "1.28.1"
+  private lazy val spotlessVersion = "1.34.1"
   def sbtSpotless(scalaVersion: String): List[ModuleID] = {
     List(
       "com.diffplug.spotless" % "spotless-lib" % spotlessVersion,
